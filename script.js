@@ -6,9 +6,72 @@ if (loginForm) {
     loginForm.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        alert("Login Berhasil!");
-        window.location.href = "dashboard.html";
+        const email = loginForm.querySelector('input[type="email"]').value;
+        const password = loginForm.querySelector('input[type="password"]').value;
+
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+
+        const user = users.find(u => u.email === email && u.password === password);
+
+        if(user){
+
+            localStorage.setItem("login","true");
+            localStorage.setItem("userLogin", JSON.stringify(user));
+
+            alert("Login berhasil!");
+            window.location.href = "dashboard.html";
+
+        }else{
+
+            alert("Email atau password salah!");
+
+        }
+
     });
+}
+
+// ================= REGISTER =================
+
+const registerForm = document.getElementById("registerForm");
+
+if (registerForm) {
+
+    registerForm.addEventListener("submit", function(e){
+
+        e.preventDefault();
+
+        const nama = document.getElementById("nama").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        const konfirmasi = document.getElementById("konfirmasi").value;
+
+        if(password !== konfirmasi){
+            alert("Konfirmasi password tidak sama!");
+            return;
+        }
+
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+
+        const cek = users.find(user => user.email === email);
+
+        if(cek){
+            alert("Email sudah terdaftar!");
+            return;
+        }
+
+        users.push({
+            nama,
+            email,
+            password
+        });
+
+        localStorage.setItem("users", JSON.stringify(users));
+
+        alert("Registrasi berhasil!");
+        window.location.href = "index.html";
+
+    });
+
 }
 
 // ================= TAMBAH TUGAS =================

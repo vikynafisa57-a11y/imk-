@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Register</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="logo">
+        <h1>TASKFLOW</h1>
+        <p>Buat akun baru untuk mulai mengelola tugas</p>
+    </div>
+
+    <form id="registerForm">
+
+        <div class="input-group">
+            <label>Nama Lengkap</label>
+            <input
+                type="text"
+                id="nama"
+                placeholder="Masukkan nama lengkap"
+                required>
+        </div>
+
+        <div class="input-group">
+            <label>Email</label>
+            <input
+                type="email"
+                id="email"
+                placeholder="Masukkan email"
+                required>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="Masukkan password"
+                required>
+        </div>
+
+        <div class="input-group">
+            <label>Konfirmasi Password</label>
+            <input
+                type="password"
+                id="konfirmasi"
+                placeholder="Konfirmasi password"
+                required>
+        </div>
+
+        <button type="submit">
+            Daftar
+        </button>
+
+    </form>
+
+    <div class="register">
+        Sudah punya akun?
+        <a href="index.html">Masuk</a>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
