@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- Header -->
+    <div class="topbar">
+        <h2>TASKFLOW</h2>
+        <i class="fa-solid fa-gear"></i>
+    </div>
+
+    <!-- Welcome -->
+    <div class="welcome">
+        <h3>Selamat Datang, Floura 👋</h3>
+        <p>Yuk selesaikan tugas hari ini!</p>
+    </div>
+
+    <!-- Statistik -->
+    <div class="card-group">
+
+        <div class="card active">
+            <h4>Tugas Saya</h4>
+            <span id="totalTask">0</span>
+        </div>
+
+        <div class="card">
+            <h4>Selesai</h4>
+            <span id="selesaiTask">0</span>
+        </div>
+
+        <div class="card">
+            <h4>Belum Selesai</h4>
+            <span id="pendingTask">0</span>
+        </div>
+
+    </div>
+
+    <!-- Search -->
+    <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+            type="text"
+            placeholder="Cari tugas...">
+    </div>
+
+    <!-- Daftar Tugas -->
+    <div class="task-list" id="taskList">
+
+        <!-- Akan diisi otomatis oleh script.js -->
+
+    </div>
+
+    <!-- Tombol Tambah -->
+    <a href="tambah.html" class="add-btn">
+        <i class="fa-solid fa-plus"></i>
+        Tugas Baru
+    </a>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+
+        <div class="nav-item active">
+            <i class="fa-solid fa-house"></i>
+            <small>Dashboard</small>
+        </div>
+
+        <div class="nav-item">
+            <i class="fa-solid fa-list-check"></i>
+            <small>Tugas</small>
+        </div>
+
+        <div class="nav-item">
+            <i class="fa-solid fa-folder"></i>
+            <small>Proyek</small>
+        </div>
+
+        <div class="nav-item">
+            <i class="fa-solid fa-calendar"></i>
+            <small>Kalender</small>
+        </div>
+
+        <div class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <small>Profil</small>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

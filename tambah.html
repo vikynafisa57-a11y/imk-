@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Tambah Tugas</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="task-page">
+
+    <div class="task-header">
+        <a href="dashboard.html">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+
+        <h2>Buat Tugas Baru</h2>
+    </div>
+
+    <form id="taskForm">
+
+        <div class="form-group">
+            <label for="judul">Judul Tugas</label>
+            <input
+                id="judul"
+                type="text"
+                placeholder="Masukkan judul tugas"
+                required>
+        </div>
+
+        <div class="form-group">
+            <label for="deskripsi">Deskripsi</label>
+            <textarea
+                id="deskripsi"
+                rows="5"
+                placeholder="Jelaskan tugas secara detail"
+                required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="proyek">Proyek</label>
+            <select id="proyek" required>
+                <option value="">Pilih proyek</option>
+                <option>Proyek Website</option>
+                <option>Mobile App</option>
+                <option>Branding</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="tanggal">Tanggal Deadline</label>
+            <input id="tanggal" type="date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="anggota">Penanggung Jawab</label>
+            <select id="anggota" required>
+                <option value="">Pilih anggota</option>
+                <option>Floura Fauziyah</option>
+                <option>Ichya Rosiana</option>
+                <option>Viky Diana</option>
+                <option>Naura Natwa</option>
+                <option>Raihan Rafananda</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+
+<label>Status</label>
+
+<select id="status">
+
+<option value="Belum">Belum</option>
+
+<option value="Proses">Proses</option>
+
+<option value="Selesai">Selesai</option>
+
+</select>
+
+</div>
+
+        <div class="btn-group">
+            <button type="button" class="btn-cancel">
+                Batal
+            </button>
+
+            <button type="submit" class="btn-save">
+                Simpan
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

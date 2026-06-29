@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Detail Tugas</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+
+<div class="detail-page">
+
+    <div class="detail-header">
+
+        <a href="dashboard.html">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+
+        <h2>Detail Tugas</h2>
+
+    </div>
+
+    <div class="detail-card">
+
+        <div class="title-row">
+
+            <h3 id="detailJudul">-</h3>
+
+            <button id="editBtn">Edit</button>
+
+        </div>
+
+        <h4>Deskripsi</h4>
+
+        <p id="detailDeskripsi"></p>
+
+        <div class="info">
+
+            <p><strong>Proyek :</strong> <span id="detailProyek"></span></p>
+
+            <p><strong>Deadline :</strong> <span id="detailTanggal"></span></p>
+
+            <p><strong>Penanggung Jawab :</strong> <span id="detailAnggota"></span></p>
+
+        </div>
+
+        <div class="comment">
+
+            <h4>Komentar</h4>
+
+            <textarea
+            placeholder="Tulis komentar..."></textarea>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
