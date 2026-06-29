@@ -1,3 +1,9 @@
+// ================= CEK DARK MODE =================
+
+if(localStorage.getItem("darkMode") === "on"){
+    document.body.classList.add("dark");
+}
+
 // ================= LOGIN =================
 
 const loginForm = document.getElementById("loginForm");
@@ -389,14 +395,9 @@ const darkMode = document.getElementById("darkMode");
 
 if(darkMode){
 
-    if(localStorage.getItem("darkMode")=="on"){
+    darkMode.checked = localStorage.getItem("darkMode") === "on";
 
-        document.body.classList.add("dark");
-        darkMode.checked=true;
-
-    }
-
-    darkMode.addEventListener("change",function(){
+    darkMode.addEventListener("change", function(){
 
         if(this.checked){
 
