@@ -761,10 +761,12 @@ body.dark .card{
     color:white;
 }
 
-body.dark input,
-body.dark textarea,
-body.dark select{
+body.dark .input-group input,
+body.dark .form-group input,
+body.dark .form-group textarea,
+body.dark .form-group select{
     background:#444;
     color:white;
     border:1px solid #666;
+}
 }
