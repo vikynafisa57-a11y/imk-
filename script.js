@@ -202,6 +202,20 @@ function tampilkanTugas() {
 
 }
 
+// ================= USER LOGIN =================
+
+const welcomeUser = document.getElementById("welcomeUser");
+
+if (welcomeUser) {
+
+    const user = JSON.parse(localStorage.getItem("userLogin"));
+
+    if (user) {
+        welcomeUser.textContent = `Selamat Datang, ${user.nama} 👋`;
+    }
+
+}
+
 // ================= DETAIL =================
 
 function lihatDetail(index) {
@@ -310,6 +324,91 @@ if (search) {
             }
 
         });
+
+    });
+
+}
+
+// ================= SETTING =================
+
+const namaUser = document.getElementById("namaUser");
+
+if(namaUser){
+
+    const user = JSON.parse(localStorage.getItem("userLogin"));
+
+    if(user){
+
+        namaUser.textContent = user.nama;
+        document.getElementById("emailUser").textContent = user.email;
+
+    }
+
+}
+
+function logout(){
+
+    if(confirm("Yakin ingin logout?")){
+
+        localStorage.removeItem("login");
+        localStorage.removeItem("userLogin");
+
+        window.location.href="index.html";
+
+    }
+
+}
+
+function hapusSemuaTugas(){
+
+    if(confirm("Hapus semua tugas?")){
+
+        localStorage.removeItem("tugas");
+
+        alert("Semua tugas berhasil dihapus.");
+
+    }
+
+}
+
+function tentangApp(){
+
+    alert(
+`TaskFlow
+
+Versi 1.0
+
+Aplikasi Manajemen Tugas
+
+Dibuat menggunakan HTML, CSS, JavaScript dan LocalStorage.`
+    );
+
+}
+
+const darkMode = document.getElementById("darkMode");
+
+if(darkMode){
+
+    if(localStorage.getItem("darkMode")=="on"){
+
+        document.body.classList.add("dark");
+        darkMode.checked=true;
+
+    }
+
+    darkMode.addEventListener("change",function(){
+
+        if(this.checked){
+
+            document.body.classList.add("dark");
+            localStorage.setItem("darkMode","on");
+
+        }else{
+
+            document.body.classList.remove("dark");
+            localStorage.setItem("darkMode","off");
+
+        }
 
     });
 

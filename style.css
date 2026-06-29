@@ -640,3 +640,131 @@ border-radius:20px;
 .hapus-btn:hover{
     background:#d9363e;
 }
+
+/* ================= SETTING ================= */
+
+.setting-page{
+    width:360px;
+    min-height:800px;
+    background:#fff;
+    margin:20px auto;
+    border-radius:25px;
+    padding:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.setting-header{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:30px;
+}
+
+.setting-header a{
+    color:#6C63FF;
+    font-size:22px;
+}
+
+.profile-box{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:#6C63FF;
+    margin:auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.avatar i{
+    color:white;
+    font-size:38px;
+}
+
+.profile-box h3{
+    margin-top:15px;
+}
+
+.profile-box p{
+    color:#777;
+}
+
+.setting-list{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.setting-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px;
+    border-radius:15px;
+    background:#F5F5F5;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.setting-item:hover{
+    background:#ECECEC;
+}
+
+.setting-item span{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.setting-item i{
+    color:#6C63FF;
+}
+
+.logout{
+    background:#ffebeb;
+}
+
+.logout span{
+    color:#e74c3c;
+    font-weight:600;
+}
+
+.logout i{
+    color:#e74c3c;
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark{
+    background:#1f1f1f !important;
+}
+
+body.dark .dashboard,
+body.dark .task-page,
+body.dark .detail-page,
+body.dark .setting-page,
+body.dark .container{
+    background:#2d2d2d;
+    color:white;
+}
+
+body.dark .task,
+body.dark .setting-item,
+body.dark .detail-card,
+body.dark .card{
+    background:#3b3b3b;
+    color:white;
+}
+
+body.dark input,
+body.dark textarea,
+body.dark select{
+    background:#444;
+    color:white;
+    border:1px solid #666;
+}

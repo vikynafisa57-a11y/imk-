@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Pengaturan</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+
+<div class="setting-page">
+
+    <div class="setting-header">
+
+        <a href="dashboard.html">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+
+        <h2>Pengaturan</h2>
+
+    </div>
+
+    <div class="profile-box">
+
+        <div class="avatar">
+            <i class="fa-solid fa-user"></i>
+        </div>
+
+        <h3 id="namaUser">Pengguna</h3>
+
+        <p id="emailUser">email@email.com</p>
+
+    </div>
+
+    <div class="setting-list">
+
+        <div class="setting-item">
+            <span>
+                <i class="fa-solid fa-moon"></i>
+                Dark Mode
+            </span>
+
+            <input type="checkbox" id="darkMode">
+        </div>
+
+        <div class="setting-item">
+            <span>
+                <i class="fa-solid fa-bell"></i>
+                Notifikasi
+            </span>
+
+            <input type="checkbox" checked>
+        </div>
+
+        <div class="setting-item" onclick="hapusSemuaTugas()">
+            <span>
+                <i class="fa-solid fa-trash"></i>
+                Hapus Semua Tugas
+            </span>
+
+            <i class="fa-solid fa-chevron-right"></i>
+        </div>
+
+        <div class="setting-item" onclick="tentangApp()">
+            <span>
+                <i class="fa-solid fa-circle-info"></i>
+                Tentang Aplikasi
+            </span>
+
+            <i class="fa-solid fa-chevron-right"></i>
+        </div>
+
+        <div class="setting-item logout" onclick="logout()">
+
+            <span>
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
