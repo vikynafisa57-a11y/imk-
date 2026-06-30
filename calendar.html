@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalender</title>
+
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+<body>
+
+<div class="phone">
+
+    <div class="calendar-header">
+        <a href="dashboard.html" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a
+        ><h2>Kalender</h2>
+    </div>
+
+    <div class="calendar-content">
+        <div id="calendar"></div>
+    </div>
+
+ <div class="bottom-nav">
+
+        <a href="dashboard.html" class="nav-item active">
+            <i class="fa-solid fa-house"></i>
+            <small>Dashboard</small>
+        </a>
+
+        <a href="tugas.html" class="nav-item">
+            <i class="fa-solid fa-list-check"></i>
+            <small>Tugas</small>
+        </a>
+
+        <a href="proyek.html" class="nav-item">
+            <i class="fa-solid fa-folder"></i>
+            <small>Proyek</small>
+        </a>
+
+        <a href="calendar.html" class="nav-item">
+            <i class="fa-solid fa-calendar"></i>
+            <small>Kalender</small>
+        </a>
+
+        <a href="profil.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <small>Profil</small>
+        </a>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    let events = JSON.parse(localStorage.getItem("calendarEvents")) || [];
+
+    const calendar = new FullCalendar.Calendar(document.getElementById("calendar"),{
+
+    initialView:"dayGridMonth",
+    locale:"id",
+
+    height:"auto",
+    contentHeight:"auto",
+    expandRows:true,
+
+    headerToolbar:{
+        left:"prev,next",
+        center:"title",
+        right:"today"
+    },
+
+            dayHeaderContent: function(arg){
+
+                const hari = {
+                    Sun: "M",
+                    Mon: "S",
+                    Tue: "S",
+                    Wed: "R",
+                    Thu: "K",
+                    Fri: "J",
+                    Sat: "S"
+                };
+
+                return hari[arg.text] || arg.text;
+
+            },
+
+            events: events,
+
+            dateClick: function(info){
+
+                let note = prompt("Masukkan catatan");
+
+                if(note){
+
+                    let event = {
+                        title: note,
+                        start: info.dateStr
+                    };
+
+                    events.push(event);
+
+                    localStorage.setItem(
+                        "calendarEvents",
+                        JSON.stringify(events)
+                    );
+
+                    calendar.addEvent(event);
+
+                }
+
+            },
+
+            eventClick: function(info){
+
+                if(confirm("Hapus catatan ini?")){
+
+                    info.event.remove();
+
+                    events = events.filter(e =>
+                        !(e.title === info.event.title &&
+                          e.start === info.event.startStr)
+                    );
+
+                    localStorage.setItem(
+                        "calendarEvents",
+                        JSON.stringify(events)
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+    calendar.render();
+
+});
+
+</script>
+
+</body>
+</html>

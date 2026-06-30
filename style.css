@@ -1108,7 +1108,162 @@ color:#e74c3c;
 
 }
 
+<<<<<<< Updated upstream
 /* ================= HALAMAN PROYEK ================= */
+=======
+/// HALAMAN KALENDER
+
+.calendar-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:20px;
+}
+
+.calendar-header h2{
+    margin:0;
+    font-size:22px;
+    font-weight:700;
+    color:#2D2D2D;
+}
+
+.back-btn{
+    width:38px;
+    height:38px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-decoration:none;
+    color:#6C63FF;
+    font-size:26px;
+    border-radius:50%;
+    transition:.2s;
+    flex-shrink:0;
+}
+
+.back-btn:hover{
+    background:#F3F0FF;
+}
+
+.calendar-content{
+    padding:0 20px 20px;
+}
+
+/// FULLCALENDAR
+
+.calendar-content{
+    padding:0 18px 20px;
+}
+
+#calendar{
+    width:100%;
+}
+
+.fc{
+    width:100%;
+    font-size:13px;
+}
+
+.fc-header-toolbar{
+    display:flex !important;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px !important;
+}
+
+.fc-toolbar-chunk{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.fc-toolbar-title{
+    font-size:18px !important;
+    font-weight:700 !important;
+    color:#6C63FF !important;
+}
+
+.fc-button{
+    background:#6C63FF !important;
+    border:none !important;
+    border-radius:12px !important;
+    width:40px;
+    height:40px;
+    padding:0 !important;
+    box-shadow:none !important;
+}
+
+.fc-button:hover{
+    background:#5849E8 !important;
+}
+
+.fc-button:focus{
+    box-shadow:none !important;
+}
+
+.fc-today-button{
+    width:auto !important;
+    padding:0 16px !important;
+    height:40px;
+}
+
+.fc-scrollgrid{
+    border:1px solid #ECECEC !important;
+    border-radius:16px;
+    overflow:hidden;
+}
+
+.fc-col-header-cell{
+    background:#FAFAFA;
+}
+
+.fc-col-header-cell-cushion{
+    text-decoration:none !important;
+    color:#666;
+    font-size:12px;
+    font-weight:600;
+}
+
+.fc-daygrid-day-frame{
+    min-height:70px;
+}
+
+.fc-day-today{
+    background:#F3F0FF !important;
+}
+
+.fc-daygrid-event{
+    background:#6C63FF !important;
+    border:none !important;
+    border-radius:6px;
+    font-size:10px;
+}
+
+@media(max-width:430px){
+
+    .calendar-header h2{
+        font-size:24px;
+    }
+
+    .fc-toolbar-title{
+        font-size:16px !important;
+    }
+
+    .fc-button{
+        width:36px;
+        height:36px;
+    }
+
+    .fc-daygrid-day-frame{
+        min-height:60px;
+    }
+
+}
+
+const btnSemua = document.getElementById("btnSemua");
+const btnHariIni = document.getElementById("btnHariIni");
+const btnSelesai = document.getElementById("btnSelesai");
+>>>>>>> Stashed changes
 
 .project-card{
     background:#fff;
