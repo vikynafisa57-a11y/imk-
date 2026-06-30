@@ -620,3 +620,64 @@ togglePassword("newPassword","togglePassword");
 togglePassword("confirmPassword","toggleConfirm");
 
 togglePassword("loginPassword","toggleLoginPassword");
+
+const btnSemua = document.getElementById("btnSemua");
+const btnHariIni = document.getElementById("btnHariIni");
+const btnSelesai = document.getElementById("btnSelesai");
+
+const semuaTask = document.querySelectorAll(".task");
+
+// Menghapus tombol aktif
+function resetButton() {
+    btnSemua.classList.remove("aktif");
+    btnHariIni.classList.remove("aktif");
+    btnSelesai.classList.remove("aktif");
+}
+
+// Tampilkan semua
+btnSemua.addEventListener("click", () => {
+
+    resetButton();
+    btnSemua.classList.add("aktif");
+
+    semuaTask.forEach(task => {
+        task.style.display = "flex";
+    });
+
+});
+
+// Tampilkan Hari Ini
+btnHariIni.addEventListener("click", () => {
+
+    resetButton();
+    btnHariIni.classList.add("aktif");
+
+    semuaTask.forEach(task => {
+
+        if(task.classList.contains("hariini")){
+            task.style.display = "flex";
+        }else{
+            task.style.display = "none";
+        }
+
+    });
+
+});
+
+// Tampilkan Selesai
+btnSelesai.addEventListener("click", () => {
+
+    resetButton();
+    btnSelesai.classList.add("aktif");
+
+    semuaTask.forEach(task => {
+
+        if(task.classList.contains("selesai")){
+            task.style.display = "flex";
+        }else{
+            task.style.display = "none";
+        }
+
+    });
+
+});
