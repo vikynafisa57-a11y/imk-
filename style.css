@@ -1108,9 +1108,9 @@ color:#e74c3c;
 
 }
 
-<<<<<<< Updated upstream
+
 /* ================= HALAMAN PROYEK ================= */
-=======
+
 /// HALAMAN KALENDER
 
 .calendar-header{
@@ -1263,7 +1263,7 @@ color:#e74c3c;
 const btnSemua = document.getElementById("btnSemua");
 const btnHariIni = document.getElementById("btnHariIni");
 const btnSelesai = document.getElementById("btnSelesai");
->>>>>>> Stashed changes
+
 
 .project-card{
     background:#fff;
