@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Tugas</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<div class="phone">
+
+    <!-- Header -->
+    <header>
+        <h2>Tugas Saya</h2>
+
+        <button class="filter">
+            <i class="fa-solid fa-sliders"></i>
+        </button>
+    </header>
+
+    <!-- Search -->
+    <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Cari tugas...">
+    </div>
+
+    <!-- Kategori -->
+    <div class="kategori">
+
+        <button class="aktif">Semua</button>
+        <button>Hari Ini</button>
+        <button>Selesai</button>
+
+    </div>
+
+    <!-- Daftar Tugas -->
+
+    <div class="task">
+
+        <div class="status"></div>
+
+        <div class="task-info">
+            <h3>Mengerjakan Laporan Basis Data</h3>
+
+            <p>
+                <i class="fa-regular fa-calendar"></i>
+                02 Juli 2026
+            </p>
+        </div>
+
+        <button class="check">
+            <i class="fa-solid fa-check"></i>
+        </button>
+
+    </div>
+
+    <div class="task">
+
+        <div class="status orange"></div>
+
+        <div class="task-info">
+            <h3>Belajar HTML & CSS</h3>
+
+            <p>
+                <i class="fa-regular fa-clock"></i>
+                18.00 WIB
+            </p>
+        </div>
+
+        <button class="check">
+            <i class="fa-solid fa-check"></i>
+        </button>
+
+    </div>
+
+    <div class="task selesai">
+
+        <div class="status green"></div>
+
+        <div class="task-info">
+            <h3>Upload Tugas Algoritma</h3>
+
+            <p>
+                <i class="fa-solid fa-circle-check"></i>
+                Selesai
+            </p>
+        </div>
+
+        <button class="check done">
+            <i class="fa-solid fa-check"></i>
+        </button>
+
+    </div>
+
+    <!-- Floating Button -->
+
+    <button class="add-btn">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <!-- Bottom Menu -->
+
+    <nav>
+
+        <a href="dashboard.html">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="#" class="active">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Tugas</span>
+        </a>
+
+        <a href="#">
+            <i class="fa-solid fa-folder"></i>
+            <span>Proyek</span>
+        </a>
+
+        <a href="#">
+            <i class="fa-solid fa-calendar"></i>
+            <span>Kalender</span>
+        </a>
+
+        <a href="#">
+            <i class="fa-solid fa-user"></i>
+            <span>Profil</span>
+        </a>
+
+    </nav>
+
+</div>
+
+</body>
+</html>
