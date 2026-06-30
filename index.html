@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskFlow - Login</title>
@@ -8,6 +9,8 @@
     <link rel="stylesheet" href="style.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
 
@@ -23,20 +26,31 @@
         <div class="input-group">
             <label>Email</label>
             <input
-                type="email"
-                placeholder="Email anda"
-                required
+            type="email"
+            id="loginEmail"
+            placeholder="Email anda"
+            required
             >
         </div>
 
-        <div class="input-group">
-            <label>Password</label>
-            <input
-                type="password"
-                placeholder="Password anda"
-                required
-            >
-        </div>
+       <div class="input-group">
+
+    <label>Password</label>
+
+    <div class="password-box">
+
+        <input
+            type="password"
+            id="loginPassword"
+            placeholder="Password anda"
+            required
+        >
+
+        <i class="fa-solid fa-eye" id="toggleLoginPassword"></i>
+
+    </div>
+
+</div>
 
         <div class="option">
 
@@ -45,7 +59,7 @@
                 <label for="ingat">Ingat saya</label>
             </div>
 
-            <a href="#">Lupa Password?</a>
+            <a href="lupapassword.html">Lupa Password?</a>
 
         </div>
 

@@ -12,8 +12,8 @@ if (loginForm) {
     loginForm.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        const email = loginForm.querySelector('input[type="email"]').value;
-        const password = loginForm.querySelector('input[type="password"]').value;
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
 
         const users = JSON.parse(localStorage.getItem("users")) || [];
 
@@ -40,45 +40,128 @@ if (loginForm) {
 
 const registerForm = document.getElementById("registerForm");
 
-if (registerForm) {
+if(registerForm){
 
-    registerForm.addEventListener("submit", function(e){
+const message=document.getElementById("registerMessage");
 
-        e.preventDefault();
+registerForm.addEventListener("submit",function(e){
 
-        const nama = document.getElementById("nama").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
-        const konfirmasi = document.getElementById("konfirmasi").value;
+e.preventDefault();
 
-        if(password !== konfirmasi){
-            alert("Konfirmasi password tidak sama!");
-            return;
+message.className="";
+message.innerHTML="";
+
+const nama=document.getElementById("nama").value.trim();
+
+const email=document.getElementById("email").value.trim();
+
+const password=document.getElementById("password").value;
+
+const konfirmasi=document.getElementById("konfirmasi").value;
+
+if(password.length<8){
+
+message.classList.add("error");
+
+message.innerHTML="Password minimal 8 karakter.";
+
+return;
+
+}
+
+const regex=/^(?=.*[A-Za-z])(?=.*\d).+$/;
+
+if(!regex.test(password)){
+
+message.classList.add("error");
+
+message.innerHTML="Password harus mengandung huruf dan angka.";
+
+return;
+
+}
+
+if(password!==konfirmasi){
+
+message.classList.add("error");
+
+message.innerHTML="Konfirmasi password tidak sama.";
+
+return;
+
+}
+
+let users=JSON.parse(localStorage.getItem("users"))||[];
+
+const cek=users.find(user=>user.email===email);
+
+if(cek){
+
+message.classList.add("error");
+
+message.innerHTML="Email sudah digunakan.";
+
+return;
+
+}
+
+users.push({
+
+nama,
+
+email,
+
+password
+
+});
+
+localStorage.setItem("users",JSON.stringify(users));
+
+message.classList.add("success");
+
+message.innerHTML="Registrasi berhasil! Mengalihkan ke halaman login...";
+
+setTimeout(()=>{
+
+window.location.href="index.html";
+
+},2000);
+
+});
+
+}
+
+// ================= SHOW / HIDE PASSWORD =================
+
+function togglePassword(inputId, iconId) {
+
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+
+    if (!input || !icon) return;
+
+    icon.addEventListener("click", function () {
+
+        if (input.type === "password") {
+
+            input.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+
+        } else {
+
+            input.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+
         }
-
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-
-        const cek = users.find(user => user.email === email);
-
-        if(cek){
-            alert("Email sudah terdaftar!");
-            return;
-        }
-
-        users.push({
-            nama,
-            email,
-            password
-        });
-
-        localStorage.setItem("users", JSON.stringify(users));
-
-        alert("Registrasi berhasil!");
-        window.location.href = "index.html";
 
     });
 
 }
+// Register
+togglePassword("password", "toggleRegisterPassword");
+togglePassword("konfirmasi", "toggleRegisterConfirm");
 
 // ================= TAMBAH TUGAS =================
 
@@ -414,3 +497,126 @@ if(darkMode){
     });
 
 }
+
+// ================= RESET PASSWORD =================
+
+const forgotPasswordForm =
+document.getElementById("forgotPasswordForm");
+
+if(forgotPasswordForm){
+
+const message=document.getElementById("message");
+
+forgotPasswordForm.addEventListener("submit",function(e){
+
+e.preventDefault();
+
+const email=document.getElementById("resetEmail").value.trim();
+
+const newPassword=document.getElementById("newPassword").value;
+
+const confirmPassword=document.getElementById("confirmPassword").value;
+
+message.className="";
+message.innerHTML="";
+
+if(newPassword.length<8){
+
+message.classList.add("error");
+
+message.innerHTML="Password minimal 8 karakter.";
+
+return;
+
+}
+
+const regex=/^(?=.*[A-Za-z])(?=.*\d).+$/;
+
+if(!regex.test(newPassword)){
+
+message.classList.add("error");
+
+message.innerHTML="Password harus mengandung huruf dan angka.";
+
+return;
+
+}
+
+if(newPassword!==confirmPassword){
+
+message.classList.add("error");
+
+message.innerHTML="Konfirmasi password tidak sama.";
+
+return;
+
+}
+
+let users=JSON.parse(localStorage.getItem("users"))||[];
+
+const index=users.findIndex(user=>user.email===email);
+
+if(index==-1){
+
+message.classList.add("error");
+
+message.innerHTML="Email tidak ditemukan.";
+
+return;
+
+}
+
+users[index].password=newPassword;
+
+localStorage.setItem("users",JSON.stringify(users));
+
+message.classList.add("success");
+
+message.innerHTML="Password berhasil diubah. Mengalihkan ke login...";
+
+setTimeout(()=>{
+
+window.location.href="index.html";
+
+},2000);
+
+});
+}
+
+// ================= SHOW PASSWORD =================
+
+function togglePassword(idInput,idIcon){
+
+const input=document.getElementById(idInput);
+
+const icon=document.getElementById(idIcon);
+
+if(input&&icon){
+
+icon.addEventListener("click",function(){
+
+if(input.type==="password"){
+
+input.type="text";
+
+icon.classList.replace("fa-eye","fa-eye-slash");
+
+}else{
+
+input.type="password";
+
+icon.classList.replace("fa-eye-slash","fa-eye");
+
+}
+
+});
+
+}
+
+}
+
+togglePassword("newPassword","togglePassword");
+
+togglePassword("confirmPassword","toggleConfirm");
+
+togglePassword("loginPassword","toggleLoginPassword");
