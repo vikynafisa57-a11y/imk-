@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Proyek</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- Header -->
+    <div class="topbar">
+        <h2>Proyek</h2>
+
+        <a href="setting.html">
+            <i class="fa-solid fa-gear"></i>
+        </a>
+    </div>
+
+    <!-- Ringkasan -->
+    <div class="card-group">
+
+        <div class="card active">
+            <h4>Total Proyek</h4>
+            <span>3</span>
+        </div>
+
+        <div class="card">
+            <h4>Selesai</h4>
+            <span>1</span>
+        </div>
+
+        <div class="card">
+            <h4>Berjalan</h4>
+            <span>2</span>
+        </div>
+
+    </div>
+
+    <!-- Search -->
+    <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Cari proyek...">
+    </div>
+
+    <!-- Daftar Proyek -->
+    <div id="projectList"></div>
+
+    <!-- Tombol Tambah -->
+
+        <a href="tambahProyek.html" class="add-btn">
+            <i class="fa-solid fa-plus"></i>
+            Proyek Baru
+        </a>
+
+    <!-- Bottom Navigation -->
+
+    <div class="bottom-nav">
+
+        <a href="dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <small>Dashboard</small>
+        </a>
+
+        <a href="tugas.html" class="nav-item">
+            <i class="fa-solid fa-list-check"></i>
+            <small>Tugas</small>
+        </a>
+
+        <a href="proyek.html" class="nav-item active">
+            <i class="fa-solid fa-folder"></i>
+            <small>Proyek</small>
+        </a>
+
+        <a href="kalender.html" class="nav-item">
+            <i class="fa-solid fa-calendar"></i>
+            <small>Kalender</small>
+        </a>
+
+        <a href="profil.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <small>Profil</small>
+        </a>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

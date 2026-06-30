@@ -1108,62 +1108,41 @@ color:#e74c3c;
 
 }
 
-const btnSemua = document.getElementById("btnSemua");
-const btnHariIni = document.getElementById("btnHariIni");
-const btnSelesai = document.getElementById("btnSelesai");
+/* ================= HALAMAN PROYEK ================= */
 
-const semuaTask = document.querySelectorAll(".task");
-
-// Menghapus tombol aktif
-function resetButton() {
-    btnSemua.classList.remove("aktif");
-    btnHariIni.classList.remove("aktif");
-    btnSelesai.classList.remove("aktif");
+.project-card{
+    background:#fff;
+    border-radius:15px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 2px 10px rgba(0,0,0,.05);
 }
 
-// Tampilkan semua
-btnSemua.addEventListener("click", () => {
+.project-card h3{
+    font-size:17px;
+    color:#333;
+    margin-bottom:8px;
+}
 
-    resetButton();
-    btnSemua.classList.add("aktif");
+.project-card p{
+    font-size:14px;
+    color:#666;
+    margin-bottom:10px;
+}
 
-    semuaTask.forEach(task => {
-        task.style.display = "flex";
-    });
+.progress{
+    width:100%;
+    height:10px;
+    background:#E5E7EB;
+    border-radius:20px;
+    overflow:hidden;
+}
 
-});
+.progress-fill{
+    height:100%;
+    background:#6C63FF;
+    border-radius:20px;
+}
 
-// Tampilkan Hari Ini
-btnHariIni.addEventListener("click", () => {
 
-    resetButton();
-    btnHariIni.classList.add("aktif");
-
-    semuaTask.forEach(task => {
-
-        if(task.classList.contains("hariini")){
-            task.style.display = "flex";
-        }else{
-            task.style.display = "none";
-        }
-
-    });
-
-});
-
-// Tampilkan Selesai
-btnSelesai.addEventListener("click", () => {
-
-    resetButton();
-    btnSelesai.classList.add("aktif");
-
-    semuaTask.forEach(task => {
-
-        if(task.classList.contains("selesai")){
-            task.style.display = "flex";
-        }else{
-            task.style.display = "none";
-        }
-
-    });
 

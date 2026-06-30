@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Proyek</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+
+<div class="task-page">
+
+    <div class="task-header">
+        <a href="proyek.html">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+
+        <h2>Tambah Proyek</h2>
+    </div>
+
+    <form id="projectForm">
+
+        <div class="form-group">
+            <label>Nama Proyek</label>
+            <input type="text" id="namaProyek" required>
+        </div>
+
+        <div class="form-group">
+            <label>Deskripsi</label>
+            <textarea id="deskripsiProyek"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Progress (%)</label>
+            <input type="number" id="progressProyek" min="0" max="100" required>
+        </div>
+
+        <button type="submit" class="btn-save">
+            Simpan
+        </button>
+
+    </form>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -681,3 +681,151 @@ btnSelesai.addEventListener("click", () => {
     });
 
 });
+
+// ================= PROYEK =================
+
+const projectForm = document.getElementById("projectForm");
+
+if(projectForm){
+
+    projectForm.addEventListener("submit",function(e){
+
+        e.preventDefault();
+
+        const proyek = {
+            nama: document.getElementById("namaProyek").value,
+            deskripsi: document.getElementById("deskripsiProyek").value
+        };
+
+        let daftarProyek =
+        JSON.parse(localStorage.getItem("proyek")) || [];
+
+        daftarProyek.push(proyek);
+
+        localStorage.setItem("proyek",
+        JSON.stringify(daftarProyek));
+
+        alert("Proyek berhasil ditambahkan!");
+
+        window.location.href="proyek.html";
+
+    });
+
+}
+
+const projectList =
+document.getElementById("projectList");
+
+if(projectList){
+
+    let daftarProyek =
+    JSON.parse(localStorage.getItem("proyek")) || [];
+
+    if(daftarProyek.length==0){
+
+        projectList.innerHTML="<p>Belum ada proyek.</p>";
+
+    }else{
+
+        daftarProyek.forEach((item,index)=>{
+
+            projectList.innerHTML+=`
+
+            <div class="project-card">
+
+                <h3>${item.nama}</h3>
+
+                <p>${item.deskripsi}</p>
+
+                <button onclick="hapusProyek(${index})">
+                    Hapus
+                </button>
+
+            </div>
+
+            `;
+
+        });
+
+    }
+
+}
+
+function hapusProyek(index){
+
+    let daftarProyek =
+    JSON.parse(localStorage.getItem("proyek")) || [];
+
+    daftarProyek.splice(index,1);
+
+    localStorage.setItem("proyek",
+    JSON.stringify(daftarProyek));
+
+    location.reload();
+
+}
+
+// ================= PROYEK =================
+
+const projectForm = document.getElementById("projectForm");
+
+if(projectForm){
+
+    projectForm.addEventListener("submit", function(e){
+
+        e.preventDefault();
+
+        const proyek = {
+            nama: document.getElementById("namaProyek").value,
+            deskripsi: document.getElementById("deskripsiProyek").value,
+            progress: document.getElementById("progressProyek").value
+        };
+
+        let daftarProyek =
+        JSON.parse(localStorage.getItem("proyek")) || [];
+
+        daftarProyek.push(proyek);
+
+        localStorage.setItem("proyek", JSON.stringify(daftarProyek));
+
+        alert("Proyek berhasil ditambahkan!");
+
+        window.location.href = "proyek.html";
+
+    });
+
+}
+
+const projectList = document.getElementById("projectList");
+
+if(projectList){
+
+    let daftarProyek =
+    JSON.parse(localStorage.getItem("proyek")) || [];
+
+    projectList.innerHTML = "";
+
+    daftarProyek.forEach(item => {
+
+        projectList.innerHTML += `
+        <div class="project-card">
+
+            <h3>${item.nama}</h3>
+
+            <p>${item.deskripsi}</p>
+
+            <div class="progress">
+                <div class="progress-fill"
+                style="width:${item.progress}%"></div>
+            </div>
+
+            <p style="margin-top:10px;">
+                Progress ${item.progress}%
+            </p>
+
+        </div>
+        `;
+
+    });
+
+}
