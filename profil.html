@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - TaskFlow</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <h2>Profil Saya</h2>
+    </div>
+
+    <!-- Foto -->
+    <div class="profile-card">
+
+        <img src="https://i.pravatar.cc/200" class="profile-img">
+
+        <h3 id="nama">Bagus Dwi Haryadi</h3>
+        <p id="email">bagus@gmail.com</p>
+
+        <button id="editBtn">
+            <i class="fa-solid fa-pen"></i>
+            Edit Profil
+        </button>
+
+    </div>
+
+    <!-- Informasi -->
+    <div class="info-card">
+
+        <div class="item">
+            <i class="fa-solid fa-user"></i>
+            <div>
+                <span>Nama</span>
+                <p id="namaInfo">Bagus Dwi Haryadi</p>
+            </div>
+        </div>
+
+        <div class="item">
+            <i class="fa-solid fa-envelope"></i>
+            <div>
+                <span>Email</span>
+                <p id="emailInfo">bagus@gmail.com</p>
+            </div>
+        </div>
+
+        <div class="item">
+            <i class="fa-solid fa-phone"></i>
+            <div>
+                <span>No HP</span>
+                <p id="hpInfo">081234567890</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Menu -->
+    <div class="menu-card">
+
+        <a href="setting.html" class="menu">
+            <i class="fa-solid fa-gear"></i>
+            <span>Pengaturan</span>
+        </a>
+
+        <div class="menu">
+            <i class="fa-solid fa-circle-question"></i>
+            <span>Bantuan</span>
+        </div>
+
+        <a href="index.html" class="menu logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Keluar</span>
+        </a>
+
+    </div>
+
+</div>
+
+<!-- Bottom Navigation -->
+
+<nav>
+
+<a href="dashboard.html">
+<i class="fa-solid fa-house"></i>
+<span>Dashboard</span>
+</a>
+
+<a href="tugas.html">
+<i class="fa-solid fa-list-check"></i>
+<span>Tugas</span>
+</a>
+
+<a href="project.html">
+<i class="fa-solid fa-folder"></i>
+<span>Proyek</span>
+</a>
+
+<a href="kalender.html">
+<i class="fa-solid fa-calendar"></i>
+<span>Kalender</span>
+</a>
+
+<a href="profile.html" class="active">
+<i class="fa-solid fa-user"></i>
+<span>Profil</span>
+</a>
+
+</nav>
+
+<script src="script.js"></script>
+
+</body>
+</html>

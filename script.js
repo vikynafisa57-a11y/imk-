@@ -242,6 +242,55 @@ function tampilkanTugas() {
 
 }
 
+// ================= Profil =================
+
+const editBtn = document.getElementById("editBtn");
+
+if (editBtn) {
+
+    editBtn.addEventListener("click", () => {
+
+        let nama = prompt("Masukkan Nama Baru", document.getElementById("nama").innerText);
+
+        if(nama == null) return;
+
+        let email = prompt("Masukkan Email", document.getElementById("email").innerText);
+
+        if(email == null) return;
+
+        let hp = prompt("Masukkan Nomor HP", document.getElementById("hpInfo").innerText);
+
+        if(hp == null) return;
+
+        document.getElementById("nama").innerText = nama;
+        document.getElementById("email").innerText = email;
+
+        document.getElementById("namaInfo").innerText = nama;
+        document.getElementById("emailInfo").innerText = email;
+        document.getElementById("hpInfo").innerText = hp;
+
+        alert("Profil berhasil diperbarui!");
+
+    });
+
+}
+
+const logoutBtn = document.querySelector(".logout");
+
+if (logoutBtn) {
+
+    logoutBtn.addEventListener("click", () => {
+
+        let keluar = confirm("Yakin ingin keluar?");
+
+        if(keluar){
+            window.location.href="index.html";
+        }
+
+    });
+
+}
+
 // ================= USER LOGIN (welcome) =================
 
 const welcomeUser = document.getElementById("welcomeUser");
@@ -283,11 +332,11 @@ if (detailJudul) {
 
 // ================= EDIT =================
 
-const editBtn = document.getElementById("editBtn");
+const taskEditBtn = document.getElementById("editBtn");
 
-if (editBtn) {
+if (taskEditBtn) {
 
-    editBtn.addEventListener("click", function () {
+    taskEditBtn.addEventListener("click", function () {
 
         let daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
         let index = localStorage.getItem("detailIndex");
