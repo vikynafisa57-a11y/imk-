@@ -1,9 +1,3 @@
-// ================= CEK DARK MODE =================
-
-if(localStorage.getItem("darkMode") === "on"){
-    document.body.classList.add("dark");
-}
-
 // ================= LOGIN =================
 
 const loginForm = document.getElementById("loginForm");
@@ -19,15 +13,15 @@ if (loginForm) {
 
         const user = users.find(u => u.email === email && u.password === password);
 
-        if(user){
+        if (user) {
 
-            localStorage.setItem("login","true");
+            localStorage.setItem("login", "true");
             localStorage.setItem("userLogin", JSON.stringify(user));
 
             alert("Login berhasil!");
             window.location.href = "dashboard.html";
 
-        }else{
+        } else {
 
             alert("Email atau password salah!");
 
@@ -40,98 +34,68 @@ if (loginForm) {
 
 const registerForm = document.getElementById("registerForm");
 
-if(registerForm){
+if (registerForm) {
 
-const message=document.getElementById("registerMessage");
+    const message = document.getElementById("registerMessage");
 
-registerForm.addEventListener("submit",function(e){
+    registerForm.addEventListener("submit", function (e) {
 
-e.preventDefault();
+        e.preventDefault();
 
-message.className="";
-message.innerHTML="";
+        message.className = "";
+        message.innerHTML = "";
 
-const nama=document.getElementById("nama").value.trim();
+        const nama = document.getElementById("nama").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        const konfirmasi = document.getElementById("konfirmasi").value;
 
-const email=document.getElementById("email").value.trim();
+        if (password.length < 8) {
+            message.classList.add("error");
+            message.innerHTML = "Password minimal 8 karakter.";
+            return;
+        }
 
-const password=document.getElementById("password").value;
+        const regex = /^(?=.*[A-Za-z])(?=.*\d).+$/;
 
-const konfirmasi=document.getElementById("konfirmasi").value;
+        if (!regex.test(password)) {
+            message.classList.add("error");
+            message.innerHTML = "Password harus mengandung huruf dan angka.";
+            return;
+        }
 
-if(password.length<8){
+        if (password !== konfirmasi) {
+            message.classList.add("error");
+            message.innerHTML = "Konfirmasi password tidak sama.";
+            return;
+        }
 
-message.classList.add("error");
+        let users = JSON.parse(localStorage.getItem("users")) || [];
 
-message.innerHTML="Password minimal 8 karakter.";
+        const cek = users.find(user => user.email === email);
 
-return;
+        if (cek) {
+            message.classList.add("error");
+            message.innerHTML = "Email sudah digunakan.";
+            return;
+        }
 
-}
+        users.push({ nama, email, password });
 
-const regex=/^(?=.*[A-Za-z])(?=.*\d).+$/;
+        localStorage.setItem("users", JSON.stringify(users));
 
-if(!regex.test(password)){
+        message.classList.add("success");
+        message.innerHTML = "Registrasi berhasil! Mengalihkan ke halaman login...";
 
-message.classList.add("error");
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 2000);
 
-message.innerHTML="Password harus mengandung huruf dan angka.";
-
-return;
-
-}
-
-if(password!==konfirmasi){
-
-message.classList.add("error");
-
-message.innerHTML="Konfirmasi password tidak sama.";
-
-return;
-
-}
-
-let users=JSON.parse(localStorage.getItem("users"))||[];
-
-const cek=users.find(user=>user.email===email);
-
-if(cek){
-
-message.classList.add("error");
-
-message.innerHTML="Email sudah digunakan.";
-
-return;
+    });
 
 }
 
-users.push({
-
-nama,
-
-email,
-
-password
-
-});
-
-localStorage.setItem("users",JSON.stringify(users));
-
-message.classList.add("success");
-
-message.innerHTML="Registrasi berhasil! Mengalihkan ke halaman login...";
-
-setTimeout(()=>{
-
-window.location.href="index.html";
-
-},2000);
-
-});
-
-}
-
-// ================= SHOW / HIDE PASSWORD =================
+// ================= SHOW / HIDE PASSWORD (dipakai di semua halaman) =================
 
 function togglePassword(inputId, iconId) {
 
@@ -143,25 +107,25 @@ function togglePassword(inputId, iconId) {
     icon.addEventListener("click", function () {
 
         if (input.type === "password") {
-
             input.type = "text";
             icon.classList.remove("fa-eye");
             icon.classList.add("fa-eye-slash");
-
         } else {
-
             input.type = "password";
             icon.classList.remove("fa-eye-slash");
             icon.classList.add("fa-eye");
-
         }
 
     });
 
 }
-// Register
+
+// Daftarkan semua toggle password yang mungkin ada di halaman ini
 togglePassword("password", "toggleRegisterPassword");
 togglePassword("konfirmasi", "toggleRegisterConfirm");
+togglePassword("loginPassword", "toggleLoginPassword");
+togglePassword("newPassword", "togglePassword");
+togglePassword("confirmPassword", "toggleConfirm");
 
 // ================= TAMBAH TUGAS =================
 
@@ -244,34 +208,22 @@ function tampilkanTugas() {
 
             taskList.innerHTML += `
             <div class="task" onclick="lihatDetail(${index})">
-
                 <div>
-
                     <h4>${item.judul}</h4>
-
                     <p>${item.proyek}</p>
-
                     <small>${item.anggota}</small><br>
-
                     <span class="status ${warna}">
                         ${item.status}
                     </span>
-
                 </div>
-
                 <div class="aksi-tugas">
-
                     <span class="today">${item.tanggal}</span>
-
                     <br><br>
-
                     <button class="hapus-btn"
                     onclick="event.stopPropagation();hapusTugas(${index})">
                     Hapus
                     </button>
-
                 </div>
-
             </div>
             `;
 
@@ -280,7 +232,6 @@ function tampilkanTugas() {
     }
 
     // Statistik
-
     const totalTask = document.getElementById("totalTask");
     const selesaiTask = document.getElementById("selesaiTask");
     const pendingTask = document.getElementById("pendingTask");
@@ -291,7 +242,7 @@ function tampilkanTugas() {
 
 }
 
-// ================= USER LOGIN =================
+// ================= USER LOGIN (welcome) =================
 
 const welcomeUser = document.getElementById("welcomeUser");
 
@@ -308,11 +259,8 @@ if (welcomeUser) {
 // ================= DETAIL =================
 
 function lihatDetail(index) {
-
     localStorage.setItem("detailIndex", index);
-
     window.location.href = "detail.html";
-
 }
 
 const detailJudul = document.getElementById("detailJudul");
@@ -320,19 +268,15 @@ const detailJudul = document.getElementById("detailJudul");
 if (detailJudul) {
 
     const daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
-
     const index = localStorage.getItem("detailIndex");
-
     const tugas = daftarTugas[index];
 
     if (tugas) {
-
         document.getElementById("detailJudul").textContent = tugas.judul;
         document.getElementById("detailDeskripsi").textContent = tugas.deskripsi;
         document.getElementById("detailProyek").textContent = tugas.proyek;
         document.getElementById("detailTanggal").textContent = tugas.tanggal;
         document.getElementById("detailAnggota").textContent = tugas.anggota;
-
     }
 
 }
@@ -346,17 +290,15 @@ if (editBtn) {
     editBtn.addEventListener("click", function () {
 
         let daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
-
         let index = localStorage.getItem("detailIndex");
-
         let tugas = daftarTugas[index];
 
-        let judul = prompt("Judul", tugas.judul);
+        if (!tugas) return;
 
+        let judul = prompt("Judul", tugas.judul);
         if (judul === null) return;
 
         let deskripsi = prompt("Deskripsi", tugas.deskripsi);
-
         if (deskripsi === null) return;
 
         tugas.judul = judul;
@@ -402,16 +344,10 @@ if (search) {
 
         const keyword = this.value.toLowerCase();
 
-        const semuaTask = document.querySelectorAll(".task");
+        const semuaTaskSearch = document.querySelectorAll(".task");
 
-        semuaTask.forEach(task => {
-
-            if (task.innerText.toLowerCase().includes(keyword)) {
-                task.style.display = "flex";
-            } else {
-                task.style.display = "none";
-            }
-
+        semuaTaskSearch.forEach(task => {
+            task.style.display = task.innerText.toLowerCase().includes(keyword) ? "flex" : "none";
         });
 
     });
@@ -422,45 +358,38 @@ if (search) {
 
 const namaUser = document.getElementById("namaUser");
 
-if(namaUser){
+if (namaUser) {
 
     const user = JSON.parse(localStorage.getItem("userLogin"));
 
-    if(user){
-
+    if (user) {
         namaUser.textContent = user.nama;
-        document.getElementById("emailUser").textContent = user.email;
-
+        const emailUserEl = document.getElementById("emailUser");
+        if (emailUserEl) emailUserEl.textContent = user.email;
     }
 
 }
 
-function logout(){
+function logout() {
 
-    if(confirm("Yakin ingin logout?")){
-
+    if (confirm("Yakin ingin logout?")) {
         localStorage.removeItem("login");
         localStorage.removeItem("userLogin");
-
-        window.location.href="index.html";
-
+        window.location.href = "index.html";
     }
 
 }
 
-function hapusSemuaTugas(){
+function hapusSemuaTugas() {
 
-    if(confirm("Hapus semua tugas?")){
-
+    if (confirm("Hapus semua tugas?")) {
         localStorage.removeItem("tugas");
-
         alert("Semua tugas berhasil dihapus.");
-
     }
 
 }
 
-function tentangApp(){
+function tentangApp() {
 
     alert(
 `TaskFlow
@@ -474,24 +403,21 @@ Dibuat menggunakan HTML, CSS, JavaScript dan LocalStorage.`
 
 }
 
+// Toggle dark mode versi halaman Setting (checkbox id="darkMode")
 const darkMode = document.getElementById("darkMode");
 
-if(darkMode){
+if (darkMode) {
 
     darkMode.checked = localStorage.getItem("darkMode") === "on";
 
-    darkMode.addEventListener("change", function(){
+    darkMode.addEventListener("change", function () {
 
-        if(this.checked){
-
+        if (this.checked) {
             document.body.classList.add("dark");
-            localStorage.setItem("darkMode","on");
-
-        }else{
-
+            localStorage.setItem("darkMode", "on");
+        } else {
             document.body.classList.remove("dark");
-            localStorage.setItem("darkMode","off");
-
+            localStorage.setItem("darkMode", "off");
         }
 
     });
@@ -500,289 +426,128 @@ if(darkMode){
 
 // ================= RESET PASSWORD =================
 
-const forgotPasswordForm =
-document.getElementById("forgotPasswordForm");
+const forgotPasswordForm = document.getElementById("forgotPasswordForm");
 
-if(forgotPasswordForm){
+if (forgotPasswordForm) {
 
-const message=document.getElementById("message");
+    const message = document.getElementById("message");
 
-forgotPasswordForm.addEventListener("submit",function(e){
+    forgotPasswordForm.addEventListener("submit", function (e) {
 
-e.preventDefault();
+        e.preventDefault();
 
-const email=document.getElementById("resetEmail").value.trim();
+        const email = document.getElementById("resetEmail").value.trim();
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
 
-const newPassword=document.getElementById("newPassword").value;
+        message.className = "";
+        message.innerHTML = "";
 
-const confirmPassword=document.getElementById("confirmPassword").value;
+        if (newPassword.length < 8) {
+            message.classList.add("error");
+            message.innerHTML = "Password minimal 8 karakter.";
+            return;
+        }
 
-message.className="";
-message.innerHTML="";
+        const regex = /^(?=.*[A-Za-z])(?=.*\d).+$/;
 
-if(newPassword.length<8){
+        if (!regex.test(newPassword)) {
+            message.classList.add("error");
+            message.innerHTML = "Password harus mengandung huruf dan angka.";
+            return;
+        }
 
-message.classList.add("error");
+        if (newPassword !== confirmPassword) {
+            message.classList.add("error");
+            message.innerHTML = "Konfirmasi password tidak sama.";
+            return;
+        }
 
-message.innerHTML="Password minimal 8 karakter.";
+        let users = JSON.parse(localStorage.getItem("users")) || [];
 
-return;
+        const index = users.findIndex(user => user.email === email);
 
+        if (index === -1) {
+            message.classList.add("error");
+            message.innerHTML = "Email tidak ditemukan.";
+            return;
+        }
+
+        users[index].password = newPassword;
+
+        localStorage.setItem("users", JSON.stringify(users));
+
+        message.classList.add("success");
+        message.innerHTML = "Password berhasil diubah. Mengalihkan ke login...";
+
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 2000);
+
+    });
 }
 
-const regex=/^(?=.*[A-Za-z])(?=.*\d).+$/;
-
-if(!regex.test(newPassword)){
-
-message.classList.add("error");
-
-message.innerHTML="Password harus mengandung huruf dan angka.";
-
-return;
-
-}
-
-if(newPassword!==confirmPassword){
-
-message.classList.add("error");
-
-message.innerHTML="Konfirmasi password tidak sama.";
-
-return;
-
-}
-
-let users=JSON.parse(localStorage.getItem("users"))||[];
-
-const index=users.findIndex(user=>user.email===email);
-
-if(index==-1){
-
-message.classList.add("error");
-
-message.innerHTML="Email tidak ditemukan.";
-
-return;
-
-}
-
-users[index].password=newPassword;
-
-localStorage.setItem("users",JSON.stringify(users));
-
-message.classList.add("success");
-
-message.innerHTML="Password berhasil diubah. Mengalihkan ke login...";
-
-setTimeout(()=>{
-
-window.location.href="index.html";
-
-},2000);
-
-});
-}
-
-// ================= SHOW PASSWORD =================
-
-function togglePassword(idInput,idIcon){
-
-const input=document.getElementById(idInput);
-
-const icon=document.getElementById(idIcon);
-
-if(input&&icon){
-
-icon.addEventListener("click",function(){
-
-if(input.type==="password"){
-
-input.type="text";
-
-icon.classList.replace("fa-eye","fa-eye-slash");
-
-}else{
-
-input.type="password";
-
-icon.classList.replace("fa-eye-slash","fa-eye");
-
-}
-
-});
-
-}
-
-}
-
-togglePassword("newPassword","togglePassword");
-
-togglePassword("confirmPassword","toggleConfirm");
-
-togglePassword("loginPassword","toggleLoginPassword");
+// ================= FILTER TUGAS (Semua / Hari Ini / Selesai) =================
 
 const btnSemua = document.getElementById("btnSemua");
 const btnHariIni = document.getElementById("btnHariIni");
 const btnSelesai = document.getElementById("btnSelesai");
 
-const semuaTask = document.querySelectorAll(".task");
-
-// Menghapus tombol aktif
 function resetButton() {
-    btnSemua.classList.remove("aktif");
-    btnHariIni.classList.remove("aktif");
-    btnSelesai.classList.remove("aktif");
+    if (btnSemua) btnSemua.classList.remove("aktif");
+    if (btnHariIni) btnHariIni.classList.remove("aktif");
+    if (btnSelesai) btnSelesai.classList.remove("aktif");
 }
 
-// Tampilkan semua
-btnSemua.addEventListener("click", () => {
-
-    resetButton();
-    btnSemua.classList.add("aktif");
-
-    semuaTask.forEach(task => {
-        task.style.display = "flex";
-    });
-
-});
-
-// Tampilkan Hari Ini
-btnHariIni.addEventListener("click", () => {
-
-    resetButton();
-    btnHariIni.classList.add("aktif");
-
-    semuaTask.forEach(task => {
-
-        if(task.classList.contains("hariini")){
+if (btnSemua) {
+    btnSemua.addEventListener("click", () => {
+        resetButton();
+        btnSemua.classList.add("aktif");
+        document.querySelectorAll(".task").forEach(task => {
             task.style.display = "flex";
-        }else{
-            task.style.display = "none";
-        }
-
-    });
-
-});
-
-// Tampilkan Selesai
-btnSelesai.addEventListener("click", () => {
-
-    resetButton();
-    btnSelesai.classList.add("aktif");
-
-    semuaTask.forEach(task => {
-
-        if(task.classList.contains("selesai")){
-            task.style.display = "flex";
-        }else{
-            task.style.display = "none";
-        }
-
-    });
-
-});
-
-// ================= PROYEK =================
-
-const projectForm = document.getElementById("projectForm");
-
-if(projectForm){
-
-    projectForm.addEventListener("submit",function(e){
-
-        e.preventDefault();
-
-        const proyek = {
-            nama: document.getElementById("namaProyek").value,
-            deskripsi: document.getElementById("deskripsiProyek").value
-        };
-
-        let daftarProyek =
-        JSON.parse(localStorage.getItem("proyek")) || [];
-
-        daftarProyek.push(proyek);
-
-        localStorage.setItem("proyek",
-        JSON.stringify(daftarProyek));
-
-        alert("Proyek berhasil ditambahkan!");
-
-        window.location.href="proyek.html";
-
-    });
-
-}
-
-const projectList =
-document.getElementById("projectList");
-
-if(projectList){
-
-    let daftarProyek =
-    JSON.parse(localStorage.getItem("proyek")) || [];
-
-    if(daftarProyek.length==0){
-
-        projectList.innerHTML="<p>Belum ada proyek.</p>";
-
-    }else{
-
-        daftarProyek.forEach((item,index)=>{
-
-            projectList.innerHTML+=`
-
-            <div class="project-card">
-
-                <h3>${item.nama}</h3>
-
-                <p>${item.deskripsi}</p>
-
-                <button onclick="hapusProyek(${index})">
-                    Hapus
-                </button>
-
-            </div>
-
-            `;
-
         });
-
-    }
-
+    });
 }
 
-function hapusProyek(index){
+if (btnHariIni) {
+    btnHariIni.addEventListener("click", () => {
+        resetButton();
+        btnHariIni.classList.add("aktif");
+        document.querySelectorAll(".task").forEach(task => {
+            task.style.display = task.classList.contains("hariini") ? "flex" : "none";
+        });
+    });
+}
 
-    let daftarProyek =
-    JSON.parse(localStorage.getItem("proyek")) || [];
-
-    daftarProyek.splice(index,1);
-
-    localStorage.setItem("proyek",
-    JSON.stringify(daftarProyek));
-
-    location.reload();
-
+if (btnSelesai) {
+    btnSelesai.addEventListener("click", () => {
+        resetButton();
+        btnSelesai.classList.add("aktif");
+        document.querySelectorAll(".task").forEach(task => {
+            task.style.display = task.classList.contains("selesai") ? "flex" : "none";
+        });
+    });
 }
 
 // ================= PROYEK =================
 
 const projectForm = document.getElementById("projectForm");
 
-if(projectForm){
+if (projectForm) {
 
-    projectForm.addEventListener("submit", function(e){
+    projectForm.addEventListener("submit", function (e) {
 
         e.preventDefault();
+
+        const progressInput = document.getElementById("progressProyek");
 
         const proyek = {
             nama: document.getElementById("namaProyek").value,
             deskripsi: document.getElementById("deskripsiProyek").value,
-            progress: document.getElementById("progressProyek").value
+            progress: progressInput ? Number(progressInput.value) || 0 : 0
         };
 
-        let daftarProyek =
-        JSON.parse(localStorage.getItem("proyek")) || [];
+        let daftarProyek = JSON.parse(localStorage.getItem("proyek")) || [];
 
         daftarProyek.push(proyek);
 
@@ -796,35 +561,80 @@ if(projectForm){
 
 }
 
-const projectList = document.getElementById("projectList");
+function tampilkanProyek() {
 
-if(projectList){
+    const projectList = document.getElementById("projectList");
 
-    let daftarProyek =
-    JSON.parse(localStorage.getItem("proyek")) || [];
+    if (!projectList) return;
+
+    let daftarProyek = JSON.parse(localStorage.getItem("proyek")) || [];
 
     projectList.innerHTML = "";
 
-    daftarProyek.forEach(item => {
+    if (daftarProyek.length === 0) {
 
-        projectList.innerHTML += `
-        <div class="project-card">
+        projectList.innerHTML = "<p>Belum ada proyek.</p>";
 
-            <h3>${item.nama}</h3>
+    } else {
 
-            <p>${item.deskripsi}</p>
+        daftarProyek.forEach((item, index) => {
 
-            <div class="progress">
-                <div class="progress-fill"
-                style="width:${item.progress}%"></div>
+            const progress = item.progress || 0;
+
+            projectList.innerHTML += `
+            <div class="project-card">
+                <h3>${item.nama}</h3>
+                <p>${item.deskripsi}</p>
+                <div class="progress">
+                    <div class="progress-fill" style="width:${progress}%"></div>
+                </div>
+                <p style="margin-top:10px;">Progress ${progress}%</p>
+                <button class="hapus-btn" onclick="hapusProyek(${index})">Hapus</button>
             </div>
+            `;
 
-            <p style="margin-top:10px;">
-                Progress ${item.progress}%
-            </p>
+        });
 
-        </div>
-        `;
+    }
+
+}
+
+tampilkanProyek();
+
+function hapusProyek(index) {
+
+    let daftarProyek = JSON.parse(localStorage.getItem("proyek")) || [];
+
+    daftarProyek.splice(index, 1);
+
+    localStorage.setItem("proyek", JSON.stringify(daftarProyek));
+
+    tampilkanProyek();
+
+}
+
+// ================= DARK MODE (global, checkbox id="darkModeToggle") =================
+
+const darkModeToggle = document.getElementById("darkModeToggle");
+
+// Terapkan preferensi dark mode saat halaman dibuka
+if (localStorage.getItem("darkMode") === "on") {
+    document.body.classList.add("dark");
+}
+
+if (darkModeToggle) {
+
+    darkModeToggle.checked = localStorage.getItem("darkMode") === "on";
+
+    darkModeToggle.addEventListener("change", function () {
+
+        if (this.checked) {
+            document.body.classList.add("dark");
+            localStorage.setItem("darkMode", "on");
+        } else {
+            document.body.classList.remove("dark");
+            localStorage.setItem("darkMode", "off");
+        }
 
     });
 

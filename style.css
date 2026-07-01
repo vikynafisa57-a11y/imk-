@@ -165,10 +165,6 @@ button{
 
 }
 
-body{
-    background:rgb(211, 235, 146) !important;
-}
-
 /* ================= DASHBOARD ================= */
 
 .dashboard{
@@ -835,36 +831,6 @@ body.dark .phone nav a.active{
 
 }
 
-.status{
-
-padding:5px 10px;
-
-border-radius:20px;
-
-color:white;
-
-font-size:12px;
-
-}
-
-.green{
-
-background:#2ecc71;
-
-}
-
-.orange{
-
-background:#f39c12;
-
-}
-
-.red{
-
-background:#e74c3c;
-
-}
-
 .progress{
 
 height:10px;
@@ -1111,7 +1077,6 @@ color:#e74c3c;
 
 /* ================= HALAMAN PROYEK ================= */
 
-/// HALAMAN KALENDER
 
 .calendar-header{
     display:flex;
@@ -1149,7 +1114,6 @@ color:#e74c3c;
     padding:0 20px 20px;
 }
 
-/// FULLCALENDAR
 
 .calendar-content{
     padding:0 18px 20px;
@@ -1260,10 +1224,6 @@ color:#e74c3c;
 
 }
 
-const btnSemua = document.getElementById("btnSemua");
-const btnHariIni = document.getElementById("btnHariIni");
-const btnSelesai = document.getElementById("btnSelesai");
-
 
 .project-card{
     background:#fff;
@@ -1298,6 +1258,3 @@ const btnSelesai = document.getElementById("btnSelesai");
     background:#6C63FF;
     border-radius:20px;
 }
-
-
-
