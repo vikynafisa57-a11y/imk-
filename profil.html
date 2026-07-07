@@ -23,9 +23,18 @@
     <!-- Foto -->
     <div class="profile-card">
 
-        <img src="https://i.pravatar.cc/200" class="profile-img">
+        <div class="photo-wrap">
+            <img src="https://i.pravatar.cc/200" class="profile-img" id="fotoProfil">
+
+            <label for="fotoInput" class="camera-btn">
+                <i class="fa-solid fa-camera"></i>
+            </label>
+
+            <input type="file" id="fotoInput" accept="image/*" style="display:none">
+        </div>
 
         <h3 id="nama">Bagus Dwi Haryadi</h3>
+        <p class="username-text">@<span id="username">bagus</span></p>
         <p id="email">bagus@gmail.com</p>
 
         <button id="editBtn">
@@ -47,12 +56,21 @@
         </div>
 
         <div class="item">
+            <i class="fa-solid fa-at"></i>
+            <div>
+                <span>Username</span>
+                <p id="usernameInfo">bagus</p>
+            </div>
+        </div>
+
+        <div class="item">
             <i class="fa-solid fa-envelope"></i>
             <div>
                 <span>Email</span>
                 <p id="emailInfo">bagus@gmail.com</p>
             </div>
         </div>
+
 
         <div class="item">
             <i class="fa-solid fa-phone"></i>

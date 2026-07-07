@@ -244,6 +244,92 @@ function tampilkanTugas() {
 
 // ================= Profil =================
 
+const profilNama = document.getElementById("nama");
+
+// Buat username default dari email (bagian sebelum @) jika user belum punya username
+function buatUsernameDariEmail(email) {
+    if (!email) return "";
+    return email.split("@")[0];
+}
+
+if (profilNama) {
+
+    // Ambil data user yang sedang login dan tampilkan di halaman profil
+    const userLogin = JSON.parse(localStorage.getItem("userLogin"));
+
+    if (userLogin) {
+
+        const username = userLogin.username || buatUsernameDariEmail(userLogin.email);
+
+        document.getElementById("nama").innerText = userLogin.nama;
+        document.getElementById("username").innerText = username;
+        document.getElementById("email").innerText = userLogin.email;
+
+        document.getElementById("namaInfo").innerText = userLogin.nama;
+        document.getElementById("usernameInfo").innerText = username;
+        document.getElementById("emailInfo").innerText = userLogin.email;
+        document.getElementById("hpInfo").innerText = userLogin.hp || "-";
+
+        if (userLogin.foto) {
+            document.getElementById("fotoProfil").src = userLogin.foto;
+        }
+
+    }
+
+}
+
+// ---- Ganti foto profil ----
+
+const fotoInput = document.getElementById("fotoInput");
+
+if (fotoInput) {
+
+    fotoInput.addEventListener("change", function () {
+
+        const file = this.files[0];
+
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            alert("File harus berupa gambar.");
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            const base64 = e.target.result;
+
+            // Tampilkan langsung fotonya
+            document.getElementById("fotoProfil").src = base64;
+
+            // Simpan ke data user yang sedang login
+            let userLogin = JSON.parse(localStorage.getItem("userLogin")) || {};
+            userLogin.foto = base64;
+            localStorage.setItem("userLogin", JSON.stringify(userLogin));
+
+            // Sinkronkan ke daftar akun (users)
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+            const idx = users.findIndex(u => u.email === userLogin.email);
+
+            if (idx !== -1) {
+                users[idx].foto = base64;
+                localStorage.setItem("users", JSON.stringify(users));
+            }
+
+            alert("Foto profil berhasil diperbarui!");
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+}
+
+// ---- Edit nama, username, email, no HP ----
+
 const editBtn = document.getElementById("editBtn");
 
 if (editBtn) {
@@ -254,6 +340,12 @@ if (editBtn) {
 
         if(nama == null) return;
 
+        let username = prompt("Masukkan Username Baru", document.getElementById("username").innerText);
+
+        if(username == null) return;
+
+        username = username.trim().replace(/\s+/g, "").toLowerCase();
+
         let email = prompt("Masukkan Email", document.getElementById("email").innerText);
 
         if(email == null) return;
@@ -262,12 +354,46 @@ if (editBtn) {
 
         if(hp == null) return;
 
+        // Update data user yang sedang login (dipakai di dashboard, setting, dll)
+        let userLogin = JSON.parse(localStorage.getItem("userLogin")) || {};
+        const emailLama = userLogin.email;
+
+        // Cek username sudah dipakai user lain atau belum
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        const dipakaiUserLain = users.find(u => u.username === username && u.email !== emailLama);
+
+        if (username && dipakaiUserLain) {
+            alert("Username sudah digunakan, silakan pilih username lain.");
+            return;
+        }
+
+        // Update tampilan di halaman
         document.getElementById("nama").innerText = nama;
+        document.getElementById("username").innerText = username;
         document.getElementById("email").innerText = email;
 
         document.getElementById("namaInfo").innerText = nama;
+        document.getElementById("usernameInfo").innerText = username;
         document.getElementById("emailInfo").innerText = email;
         document.getElementById("hpInfo").innerText = hp;
+
+        userLogin.nama = nama;
+        userLogin.username = username;
+        userLogin.email = email;
+        userLogin.hp = hp;
+
+        localStorage.setItem("userLogin", JSON.stringify(userLogin));
+
+        // Sinkronkan juga ke daftar akun (users) supaya tetap konsisten saat login ulang
+        const idx = users.findIndex(u => u.email === emailLama);
+
+        if (idx !== -1) {
+            users[idx].nama = nama;
+            users[idx].username = username;
+            users[idx].email = email;
+            users[idx].hp = hp;
+            localStorage.setItem("users", JSON.stringify(users));
+        }
 
         alert("Profil berhasil diperbarui!");
 
