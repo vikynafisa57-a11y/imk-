@@ -778,3 +778,69 @@ if (darkModeToggle) {
     });
 
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const calendarEl = document.getElementById("calendar");
+
+    let events = JSON.parse(localStorage.getItem("calendarEvents")) || [];
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+
+        locale: "id",
+        initialView: "dayGridMonth",
+        height: "auto",
+
+        headerToolbar: {
+            left: "prev,next",
+            center: "title",
+            right: "today"
+        },
+
+        events: events,
+
+        dateClick: function(info){
+
+            const note = prompt("Masukkan catatan");
+
+            if(note){
+
+                const event = {
+                    title: note,
+                    start: info.dateStr
+                };
+
+                events.push(event);
+
+                localStorage.setItem(
+                    "calendarEvents",
+                    JSON.stringify(events)
+                );
+
+                calendar.addEvent(event);
+            }
+        },
+
+        eventClick: function(info){
+
+            if(confirm("Hapus catatan ini?")){
+
+                info.event.remove();
+
+                events = events.filter(e =>
+                    !(e.title === info.event.title &&
+                      e.start === info.event.startStr)
+                );
+
+                localStorage.setItem(
+                    "calendarEvents",
+                    JSON.stringify(events)
+                );
+            }
+        }
+
+    });
+
+    calendar.render();
+
+});
