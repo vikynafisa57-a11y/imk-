@@ -536,6 +536,96 @@ if (forgotPasswordForm) {
     });
 }
 
+// CALENDAR
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    let events = JSON.parse(localStorage.getItem("calendarEvents")) || [];
+
+    const calendar = new FullCalendar.Calendar(document.getElementById("calendar"),{
+
+    initialView:"dayGridMonth",
+    locale:"id",
+
+    height:"auto",
+    contentHeight:"auto",
+    expandRows:true,
+
+    headerToolbar:{
+        left:"prev,next",
+        center:"title",
+        right:"today"
+    },
+
+            dayHeaderContent: function(arg){
+
+                const hari = {
+                    Sun: "M",
+                    Mon: "S",
+                    Tue: "S",
+                    Wed: "R",
+                    Thu: "K",
+                    Fri: "J",
+                    Sat: "S"
+                };
+
+                return hari[arg.text] || arg.text;
+
+            },
+
+            events: events,
+
+            dateClick: function(info){
+
+                let note = prompt("Masukkan catatan");
+
+                if(note){
+
+                    let event = {
+                        title: note,
+                        start: info.dateStr
+                    };
+
+                    events.push(event);
+
+                    localStorage.setItem(
+                        "calendarEvents",
+                        JSON.stringify(events)
+                    );
+
+                    calendar.addEvent(event);
+
+                }
+
+            },
+
+            eventClick: function(info){
+
+                if(confirm("Hapus catatan ini?")){
+
+                    info.event.remove();
+
+                    events = events.filter(e =>
+                        !(e.title === info.event.title &&
+                          e.start === info.event.startStr)
+                    );
+
+                    localStorage.setItem(
+                        "calendarEvents",
+                        JSON.stringify(events)
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+    calendar.render();
+
+});
+
 // ================= FILTER TUGAS (Semua / Hari Ini / Selesai) =================
 
 const btnSemua = document.getElementById("btnSemua");
