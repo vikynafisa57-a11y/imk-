@@ -120,12 +120,61 @@ function togglePassword(inputId, iconId) {
 
 }
 
-// Daftarkan semua toggle password yang mungkin ada di halaman ini
 togglePassword("password", "toggleRegisterPassword");
 togglePassword("konfirmasi", "toggleRegisterConfirm");
 togglePassword("loginPassword", "toggleLoginPassword");
 togglePassword("newPassword", "togglePassword");
 togglePassword("confirmPassword", "toggleConfirm");
+
+// ================= HELPER TANGGAL (dipakai di banyak halaman) =================
+
+const NAMA_BULAN = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+
+function formatTanggal(tanggal) {
+
+    if (!tanggal) return "Tanpa deadline";
+
+    const d = new Date(tanggal + "T00:00:00");
+
+    if (isNaN(d)) return tanggal;
+
+    return `${String(d.getDate()).padStart(2, "0")} ${NAMA_BULAN[d.getMonth()]} ${d.getFullYear()}`;
+
+}
+
+function infoDeadline(tanggal) {
+
+    if (!tanggal) return { label: "Tanpa deadline", kelas: "nanti" };
+
+    const hariIni = new Date();
+    hariIni.setHours(0, 0, 0, 0);
+
+    const target = new Date(tanggal + "T00:00:00");
+
+    const selisih = Math.round((target - hariIni) / 86400000);
+
+    if (selisih < 0) return { label: "Terlewat", kelas: "telat" };
+    if (selisih === 0) return { label: "Hari ini", kelas: "hari-ini" };
+    if (selisih === 1) return { label: "Besok", kelas: "besok" };
+
+    return { label: `H-${selisih}`, kelas: "nanti" };
+
+}
+
+// Dipakai untuk urutkan gabungan tugas & proyek berdasarkan deadline terdekat
+function waktuUrut(tanggal) {
+    if (!tanggal) return Infinity;
+    const t = new Date(tanggal + "T00:00:00").getTime();
+    return isNaN(t) ? Infinity : t;
+}
+
+// ================= REFRESH SEMUA TAMPILAN (dipanggil setelah tambah/ubah/hapus) =================
+
+function refreshSemua() {
+    if (document.getElementById("dashboardList")) renderDashboard();
+    if (document.getElementById("taskList")) renderTugasPage();
+    if (document.getElementById("projectList")) renderProyekPage();
+}
 
 // ================= TAMBAH TUGAS =================
 
@@ -137,13 +186,17 @@ if (taskForm) {
 
         e.preventDefault();
 
+        const kategoriEl = document.getElementById("kategoriTugas");
+        const reminderEl = document.getElementById("reminderTugas");
+
         const tugas = {
+            id: Date.now(),
             judul: document.getElementById("judul").value,
             deskripsi: document.getElementById("deskripsi").value,
-            proyek: document.getElementById("proyek").value,
+            kategori: kategoriEl ? kategoriEl.value : "",
             tanggal: document.getElementById("tanggal").value,
-            anggota: document.getElementById("anggota").value,
-            status: document.getElementById("status").value
+            status: document.getElementById("status").value,
+            reminder: reminderEl ? reminderEl.value : ""
         };
 
         let daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
@@ -154,21 +207,17 @@ if (taskForm) {
 
         alert("Tugas berhasil ditambahkan!");
 
-        window.location.href = "dashboard.html";
+        window.location.href = "tugas.html";
 
     });
 
 }
 
-// ================= DASHBOARD =================
+// ================= HALAMAN TUGAS (list dinamis + filter + toggle selesai) =================
 
-const taskList = document.getElementById("taskList");
+let filterTugasAktif = "semua";
 
-if (taskList) {
-    tampilkanTugas();
-}
-
-function tampilkanTugas() {
+function renderTugasPage() {
 
     const taskList = document.getElementById("taskList");
 
@@ -176,70 +225,253 @@ function tampilkanTugas() {
 
     const daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
 
-    taskList.innerHTML = "";
+    // Tempelkan index asli sebelum difilter, supaya toggle/hapus tetap kena data yang benar
+    let ditampilkan = daftarTugas.map((item, idx) => Object.assign({}, item, { idxAsli: idx }));
 
-    let selesai = 0;
-    let belum = 0;
+    const hariIniStr = new Date().toISOString().split("T")[0];
 
-    if (daftarTugas.length === 0) {
+    if (filterTugasAktif === "hariini") {
+        ditampilkan = ditampilkan.filter(t => t.tanggal === hariIniStr);
+    } else if (filterTugasAktif === "selesai") {
+        ditampilkan = ditampilkan.filter(t => t.status === "Selesai");
+    }
+
+    if (ditampilkan.length === 0) {
 
         taskList.innerHTML = `
+        <p style="text-align:center;color:gray;padding:30px 10px;">
+            Belum ada tugas${filterTugasAktif !== "semua" ? " pada kategori ini" : ""}.
+        </p>
+        `;
+
+        return;
+    }
+
+    taskList.innerHTML = ditampilkan.map(item => {
+
+        const selesai = item.status === "Selesai";
+        const warnaStatus = selesai ? "green" : (item.status === "Proses" ? "orange" : "");
+        const dl = infoDeadline(item.tanggal);
+
+        return `
+        <div class="task ${selesai ? "selesai" : ""}">
+
+            <div class="status ${warnaStatus}"></div>
+
+            <div class="task-info">
+                <h3>${item.judul}</h3>
+                ${item.kategori ? `<span class="tag-pill"><i class="fa-solid fa-tag"></i> ${item.kategori}</span>` : ""}
+                <p>
+                    <span class="deadline-badge ${dl.kelas}">
+                        <i class="fa-regular fa-calendar"></i>
+                        ${formatTanggal(item.tanggal)} &middot; ${dl.label}
+                    </span>
+                </p>
+            </div>
+
+            <div class="aksi-tugas">
+                <button class="check ${selesai ? "done" : ""}" onclick="toggleTugas(${item.idxAsli})" title="Tandai selesai">
+                    <i class="fa-solid fa-check"></i>
+                </button>
+                <button class="hapus-btn" onclick="hapusTugas(${item.idxAsli})">Hapus</button>
+            </div>
+
+        </div>
+        `;
+
+    }).join("");
+
+}
+
+function toggleTugas(index) {
+
+    let daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
+
+    const item = daftarTugas[index];
+
+    if (!item) return;
+
+    item.status = item.status === "Selesai" ? "Belum" : "Selesai";
+
+    daftarTugas[index] = item;
+
+    localStorage.setItem("tugas", JSON.stringify(daftarTugas));
+
+    refreshSemua();
+
+}
+
+function hapusTugas(index) {
+
+    if (confirm("Yakin ingin menghapus tugas ini?")) {
+
+        let daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
+
+        daftarTugas.splice(index, 1);
+
+        localStorage.setItem("tugas", JSON.stringify(daftarTugas));
+
+        refreshSemua();
+
+    }
+
+}
+
+// Tombol filter Semua / Hari Ini / Selesai di halaman Tugas
+
+const btnSemua = document.getElementById("btnSemua");
+const btnHariIni = document.getElementById("btnHariIni");
+const btnSelesai = document.getElementById("btnSelesai");
+
+function resetButton() {
+    if (btnSemua) btnSemua.classList.remove("aktif");
+    if (btnHariIni) btnHariIni.classList.remove("aktif");
+    if (btnSelesai) btnSelesai.classList.remove("aktif");
+}
+
+if (btnSemua) {
+    btnSemua.addEventListener("click", () => {
+        resetButton();
+        btnSemua.classList.add("aktif");
+        filterTugasAktif = "semua";
+        renderTugasPage();
+    });
+}
+
+if (btnHariIni) {
+    btnHariIni.addEventListener("click", () => {
+        resetButton();
+        btnHariIni.classList.add("aktif");
+        filterTugasAktif = "hariini";
+        renderTugasPage();
+    });
+}
+
+if (btnSelesai) {
+    btnSelesai.addEventListener("click", () => {
+        resetButton();
+        btnSelesai.classList.add("aktif");
+        filterTugasAktif = "selesai";
+        renderTugasPage();
+    });
+}
+
+if (document.getElementById("taskList")) {
+    renderTugasPage();
+}
+
+// ================= DASHBOARD (gabungan tugas + proyek) =================
+
+function renderDashboard() {
+
+    const dashboardList = document.getElementById("dashboardList");
+
+    if (!dashboardList) return;
+
+    const daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
+    const daftarProyek = JSON.parse(localStorage.getItem("proyek")) || [];
+
+    let gabungan = [];
+
+    daftarTugas.forEach((item, idx) => {
+        gabungan.push({
+            tipe: "tugas",
+            idxAsli: idx,
+            judul: item.judul,
+            sub: item.kategori || "Tugas",
+            tanggal: item.tanggal,
+            selesai: item.status === "Selesai",
+            warnaStatus: item.status === "Selesai" ? "green" : (item.status === "Proses" ? "orange" : "")
+        });
+    });
+
+    daftarProyek.forEach((item, idx) => {
+        gabungan.push({
+            tipe: "proyek",
+            idxAsli: idx,
+            judul: item.nama,
+            sub: item.jenis ? `Proyek ${item.jenis}` : "Proyek",
+            tanggal: item.deadline,
+            selesai: item.status === "Selesai",
+            warnaStatus: item.status === "Selesai" ? "green" : "orange"
+        });
+    });
+
+    // Urutkan: yang belum selesai & deadline terdekat naik ke atas
+    gabungan.sort((a, b) => {
+        if (a.selesai !== b.selesai) return a.selesai ? 1 : -1;
+        return waktuUrut(a.tanggal) - waktuUrut(b.tanggal);
+    });
+
+    if (gabungan.length === 0) {
+
+        dashboardList.innerHTML = `
         <p style="text-align:center;color:gray;padding:20px;">
-            Belum ada tugas
+            Belum ada tugas atau proyek. Yuk tambahkan lewat menu Tugas / Proyek!
         </p>
         `;
 
     } else {
 
-        daftarTugas.forEach((item, index) => {
+        dashboardList.innerHTML = gabungan.map(item => {
 
-            let warna = "";
+            const dl = infoDeadline(item.tanggal);
 
-            if (item.status === "Selesai") {
-                warna = "green";
-                selesai++;
-            } else if (item.status === "Proses") {
-                warna = "orange";
-                belum++;
-            } else {
-                warna = "red";
-                belum++;
-            }
+            const onToggle = item.tipe === "tugas"
+                ? `toggleTugas(${item.idxAsli})`
+                : `toggleProyek(${item.idxAsli})`;
 
-            taskList.innerHTML += `
-            <div class="task" onclick="lihatDetail(${index})">
-                <div>
-                    <h4>${item.judul}</h4>
-                    <p>${item.proyek}</p>
-                    <small>${item.anggota}</small><br>
-                    <span class="status ${warna}">
-                        ${item.status}
-                    </span>
+            const onHapus = item.tipe === "tugas"
+                ? `hapusTugas(${item.idxAsli})`
+                : `hapusProyek(${item.idxAsli})`;
+
+            return `
+            <div class="task ${item.selesai ? "selesai" : ""}">
+
+                <div class="status ${item.warnaStatus}"></div>
+
+                <div class="task-info">
+                    <h3>
+                        <span class="tipe-badge ${item.tipe}">${item.tipe === "tugas" ? "Tugas" : "Proyek"}</span>
+                        ${item.judul}
+                    </h3>
+                    <p>${item.sub}</p>
+                    <p>
+                        <span class="deadline-badge ${dl.kelas}">
+                            <i class="fa-regular fa-calendar"></i>
+                            ${formatTanggal(item.tanggal)} &middot; ${dl.label}
+                        </span>
+                    </p>
                 </div>
+
                 <div class="aksi-tugas">
-                    <span class="today">${item.tanggal}</span>
-                    <br><br>
-                    <button class="hapus-btn"
-                    onclick="event.stopPropagation();hapusTugas(${index})">
-                    Hapus
+                    <button class="check ${item.selesai ? "done" : ""}" onclick="${onToggle}" title="Tandai selesai">
+                        <i class="fa-solid fa-check"></i>
                     </button>
+                    <button class="hapus-btn" onclick="${onHapus}">Hapus</button>
                 </div>
+
             </div>
             `;
 
-        });
+        }).join("");
 
     }
 
-    // Statistik
     const totalTask = document.getElementById("totalTask");
     const selesaiTask = document.getElementById("selesaiTask");
     const pendingTask = document.getElementById("pendingTask");
 
-    if (totalTask) totalTask.textContent = daftarTugas.length;
-    if (selesaiTask) selesaiTask.textContent = selesai;
-    if (pendingTask) pendingTask.textContent = belum;
+    const totalSelesai = gabungan.filter(g => g.selesai).length;
 
+    if (totalTask) totalTask.textContent = gabungan.length;
+    if (selesaiTask) selesaiTask.textContent = totalSelesai;
+    if (pendingTask) pendingTask.textContent = gabungan.length - totalSelesai;
+
+}
+
+if (document.getElementById("dashboardList")) {
+    renderDashboard();
 }
 
 // ================= Profil =================
@@ -254,7 +486,6 @@ function buatUsernameDariEmail(email) {
 
 if (profilNama) {
 
-    // Ambil data user yang sedang login dan tampilkan di halaman profil
     const userLogin = JSON.parse(localStorage.getItem("userLogin"));
 
     if (userLogin) {
@@ -301,15 +532,12 @@ if (fotoInput) {
 
             const base64 = e.target.result;
 
-            // Tampilkan langsung fotonya
             document.getElementById("fotoProfil").src = base64;
 
-            // Simpan ke data user yang sedang login
             let userLogin = JSON.parse(localStorage.getItem("userLogin")) || {};
             userLogin.foto = base64;
             localStorage.setItem("userLogin", JSON.stringify(userLogin));
 
-            // Sinkronkan ke daftar akun (users)
             let users = JSON.parse(localStorage.getItem("users")) || [];
             const idx = users.findIndex(u => u.email === userLogin.email);
 
@@ -338,27 +566,25 @@ if (editBtn) {
 
         let nama = prompt("Masukkan Nama Baru", document.getElementById("nama").innerText);
 
-        if(nama == null) return;
+        if (nama == null) return;
 
         let username = prompt("Masukkan Username Baru", document.getElementById("username").innerText);
 
-        if(username == null) return;
+        if (username == null) return;
 
         username = username.trim().replace(/\s+/g, "").toLowerCase();
 
         let email = prompt("Masukkan Email", document.getElementById("email").innerText);
 
-        if(email == null) return;
+        if (email == null) return;
 
         let hp = prompt("Masukkan Nomor HP", document.getElementById("hpInfo").innerText);
 
-        if(hp == null) return;
+        if (hp == null) return;
 
-        // Update data user yang sedang login (dipakai di dashboard, setting, dll)
         let userLogin = JSON.parse(localStorage.getItem("userLogin")) || {};
         const emailLama = userLogin.email;
 
-        // Cek username sudah dipakai user lain atau belum
         let users = JSON.parse(localStorage.getItem("users")) || [];
         const dipakaiUserLain = users.find(u => u.username === username && u.email !== emailLama);
 
@@ -367,7 +593,6 @@ if (editBtn) {
             return;
         }
 
-        // Update tampilan di halaman
         document.getElementById("nama").innerText = nama;
         document.getElementById("username").innerText = username;
         document.getElementById("email").innerText = email;
@@ -384,7 +609,6 @@ if (editBtn) {
 
         localStorage.setItem("userLogin", JSON.stringify(userLogin));
 
-        // Sinkronkan juga ke daftar akun (users) supaya tetap konsisten saat login ulang
         const idx = users.findIndex(u => u.email === emailLama);
 
         if (idx !== -1) {
@@ -409,15 +633,15 @@ if (logoutBtn) {
 
         let keluar = confirm("Yakin ingin keluar?");
 
-        if(keluar){
-            window.location.href="index.html";
+        if (keluar) {
+            window.location.href = "index.html";
         }
 
     });
 
 }
 
-// ================= USER LOGIN (welcome) =================
+// ================= USER LOGIN (welcome di dashboard) =================
 
 const welcomeUser = document.getElementById("welcomeUser");
 
@@ -431,85 +655,7 @@ if (welcomeUser) {
 
 }
 
-// ================= DETAIL =================
-
-function lihatDetail(index) {
-    localStorage.setItem("detailIndex", index);
-    window.location.href = "detail.html";
-}
-
-const detailJudul = document.getElementById("detailJudul");
-
-if (detailJudul) {
-
-    const daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
-    const index = localStorage.getItem("detailIndex");
-    const tugas = daftarTugas[index];
-
-    if (tugas) {
-        document.getElementById("detailJudul").textContent = tugas.judul;
-        document.getElementById("detailDeskripsi").textContent = tugas.deskripsi;
-        document.getElementById("detailProyek").textContent = tugas.proyek;
-        document.getElementById("detailTanggal").textContent = tugas.tanggal;
-        document.getElementById("detailAnggota").textContent = tugas.anggota;
-    }
-
-}
-
-// ================= EDIT =================
-
-const taskEditBtn = document.getElementById("editBtn");
-
-if (taskEditBtn) {
-
-    taskEditBtn.addEventListener("click", function () {
-
-        let daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
-        let index = localStorage.getItem("detailIndex");
-        let tugas = daftarTugas[index];
-
-        if (!tugas) return;
-
-        let judul = prompt("Judul", tugas.judul);
-        if (judul === null) return;
-
-        let deskripsi = prompt("Deskripsi", tugas.deskripsi);
-        if (deskripsi === null) return;
-
-        tugas.judul = judul;
-        tugas.deskripsi = deskripsi;
-
-        daftarTugas[index] = tugas;
-
-        localStorage.setItem("tugas", JSON.stringify(daftarTugas));
-
-        alert("Tugas berhasil diperbarui!");
-
-        location.reload();
-
-    });
-
-}
-
-// ================= HAPUS =================
-
-function hapusTugas(index) {
-
-    if (confirm("Yakin ingin menghapus tugas ini?")) {
-
-        let daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
-
-        daftarTugas.splice(index, 1);
-
-        localStorage.setItem("tugas", JSON.stringify(daftarTugas));
-
-        tampilkanTugas();
-
-    }
-
-}
-
-// ================= SEARCH =================
+// ================= SEARCH (dashboard & tugas) =================
 
 const search = document.querySelector(".search-box input");
 
@@ -519,9 +665,7 @@ if (search) {
 
         const keyword = this.value.toLowerCase();
 
-        const semuaTaskSearch = document.querySelectorAll(".task");
-
-        semuaTaskSearch.forEach(task => {
+        document.querySelectorAll(".task").forEach(task => {
             task.style.display = task.innerText.toLowerCase().includes(keyword) ? "flex" : "none";
         });
 
@@ -560,6 +704,7 @@ function hapusSemuaTugas() {
     if (confirm("Hapus semua tugas?")) {
         localStorage.removeItem("tugas");
         alert("Semua tugas berhasil dihapus.");
+        refreshSemua();
     }
 
 }
@@ -578,7 +723,6 @@ Dibuat menggunakan HTML, CSS, JavaScript dan LocalStorage.`
 
 }
 
-// Toggle dark mode versi halaman Setting (checkbox id="darkMode")
 const darkMode = document.getElementById("darkMode");
 
 if (darkMode) {
@@ -662,138 +806,6 @@ if (forgotPasswordForm) {
     });
 }
 
-// CALENDAR
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    let events = JSON.parse(localStorage.getItem("calendarEvents")) || [];
-
-    const calendar = new FullCalendar.Calendar(document.getElementById("calendar"),{
-
-    initialView:"dayGridMonth",
-    locale:"id",
-
-    height:"auto",
-    contentHeight:"auto",
-    expandRows:true,
-
-    headerToolbar:{
-        left:"prev,next",
-        center:"title",
-        right:"today"
-    },
-
-            dayHeaderContent: function(arg){
-
-                const hari = {
-                    Sun: "M",
-                    Mon: "S",
-                    Tue: "S",
-                    Wed: "R",
-                    Thu: "K",
-                    Fri: "J",
-                    Sat: "S"
-                };
-
-                return hari[arg.text] || arg.text;
-
-            },
-
-            events: events,
-
-            dateClick: function(info){
-
-                let note = prompt("Masukkan catatan");
-
-                if(note){
-
-                    let event = {
-                        title: note,
-                        start: info.dateStr
-                    };
-
-                    events.push(event);
-
-                    localStorage.setItem(
-                        "calendarEvents",
-                        JSON.stringify(events)
-                    );
-
-                    calendar.addEvent(event);
-
-                }
-
-            },
-
-            eventClick: function(info){
-
-                if(confirm("Hapus catatan ini?")){
-
-                    info.event.remove();
-
-                    events = events.filter(e =>
-                        !(e.title === info.event.title &&
-                          e.start === info.event.startStr)
-                    );
-
-                    localStorage.setItem(
-                        "calendarEvents",
-                        JSON.stringify(events)
-                    );
-
-                }
-
-            }
-
-        }
-    );
-
-    calendar.render();
-
-});
-
-// ================= FILTER TUGAS (Semua / Hari Ini / Selesai) =================
-
-const btnSemua = document.getElementById("btnSemua");
-const btnHariIni = document.getElementById("btnHariIni");
-const btnSelesai = document.getElementById("btnSelesai");
-
-function resetButton() {
-    if (btnSemua) btnSemua.classList.remove("aktif");
-    if (btnHariIni) btnHariIni.classList.remove("aktif");
-    if (btnSelesai) btnSelesai.classList.remove("aktif");
-}
-
-if (btnSemua) {
-    btnSemua.addEventListener("click", () => {
-        resetButton();
-        btnSemua.classList.add("aktif");
-        document.querySelectorAll(".task").forEach(task => {
-            task.style.display = "flex";
-        });
-    });
-}
-
-if (btnHariIni) {
-    btnHariIni.addEventListener("click", () => {
-        resetButton();
-        btnHariIni.classList.add("aktif");
-        document.querySelectorAll(".task").forEach(task => {
-            task.style.display = task.classList.contains("hariini") ? "flex" : "none";
-        });
-    });
-}
-
-if (btnSelesai) {
-    btnSelesai.addEventListener("click", () => {
-        resetButton();
-        btnSelesai.classList.add("aktif");
-        document.querySelectorAll(".task").forEach(task => {
-            task.style.display = task.classList.contains("selesai") ? "flex" : "none";
-        });
-    });
-}
-
 // ================= PROYEK =================
 
 const projectForm = document.getElementById("projectForm");
@@ -805,11 +817,21 @@ if (projectForm) {
         e.preventDefault();
 
         const progressInput = document.getElementById("progressProyek");
+        const jenisEl = document.getElementById("jenisProyek");
+        const deadlineEl = document.getElementById("deadlineProyek");
+        const penanggungEl = document.getElementById("penanggungProyek");
+        const reminderEl = document.getElementById("reminderProyek");
 
         const proyek = {
+            id: Date.now(),
             nama: document.getElementById("namaProyek").value,
             deskripsi: document.getElementById("deskripsiProyek").value,
-            progress: progressInput ? Number(progressInput.value) || 0 : 0
+            jenis: jenisEl ? jenisEl.value : "",
+            deadline: deadlineEl ? deadlineEl.value : "",
+            penanggungJawab: penanggungEl ? penanggungEl.value : "",
+            progress: progressInput ? (Number(progressInput.value) || 0) : 0,
+            reminder: reminderEl ? reminderEl.value : "",
+            status: "Berjalan"
         };
 
         let daftarProyek = JSON.parse(localStorage.getItem("proyek")) || [];
@@ -826,7 +848,7 @@ if (projectForm) {
 
 }
 
-function tampilkanProyek() {
+function renderProyekPage() {
 
     const projectList = document.getElementById("projectList");
 
@@ -834,55 +856,111 @@ function tampilkanProyek() {
 
     let daftarProyek = JSON.parse(localStorage.getItem("proyek")) || [];
 
-    projectList.innerHTML = "";
-
     if (daftarProyek.length === 0) {
 
-        projectList.innerHTML = "<p>Belum ada proyek.</p>";
+        projectList.innerHTML = `
+        <p style="text-align:center;color:gray;padding:30px 10px;">
+            Belum ada proyek. Yuk tambahkan proyek baru!
+        </p>
+        `;
 
     } else {
 
-        daftarProyek.forEach((item, index) => {
+        projectList.innerHTML = daftarProyek.map((item, index) => {
 
+            const selesai = item.status === "Selesai";
             const progress = item.progress || 0;
+            const dl = infoDeadline(item.deadline);
 
-            projectList.innerHTML += `
-            <div class="project-card">
-                <h3>${item.nama}</h3>
-                <p>${item.deskripsi}</p>
-                <div class="progress">
-                    <div class="progress-fill" style="width:${progress}%"></div>
+            return `
+            <div class="task ${selesai ? "selesai" : ""}">
+
+                <div class="status ${selesai ? "green" : "orange"}"></div>
+
+                <div class="task-info">
+                    <h3>${item.nama}</h3>
+                    <span class="tag-pill"><i class="fa-solid fa-people-group"></i> ${item.jenis || "-"}</span>
+                    ${item.penanggungJawab ? `<p><i class="fa-solid fa-user"></i> ${item.penanggungJawab}</p>` : ""}
+                    <p>
+                        <span class="deadline-badge ${dl.kelas}">
+                            <i class="fa-regular fa-calendar"></i>
+                            ${formatTanggal(item.deadline)} &middot; ${dl.label}
+                        </span>
+                    </p>
+                    <div class="progress">
+                        <div class="progress-fill" style="width:${progress}%"></div>
+                    </div>
+                    <p style="margin-top:6px;font-size:11px;">Progress ${progress}%</p>
                 </div>
-                <p style="margin-top:10px;">Progress ${progress}%</p>
-                <button class="hapus-btn" onclick="hapusProyek(${index})">Hapus</button>
+
+                <div class="aksi-tugas">
+                    <button class="check ${selesai ? "done" : ""}" onclick="toggleProyek(${index})" title="Tandai selesai">
+                        <i class="fa-solid fa-check"></i>
+                    </button>
+                    <button class="hapus-btn" onclick="hapusProyek(${index})">Hapus</button>
+                </div>
+
             </div>
             `;
 
-        });
+        }).join("");
+
+    }
+
+    const totalProyek = document.getElementById("totalProyek");
+    const selesaiProyek = document.getElementById("selesaiProyek");
+    const berjalanProyek = document.getElementById("berjalanProyek");
+
+    const jumlahSelesai = daftarProyek.filter(p => p.status === "Selesai").length;
+
+    if (totalProyek) totalProyek.textContent = daftarProyek.length;
+    if (selesaiProyek) selesaiProyek.textContent = jumlahSelesai;
+    if (berjalanProyek) berjalanProyek.textContent = daftarProyek.length - jumlahSelesai;
+
+}
+
+function toggleProyek(index) {
+
+    let daftarProyek = JSON.parse(localStorage.getItem("proyek")) || [];
+
+    const item = daftarProyek[index];
+
+    if (!item) return;
+
+    item.status = item.status === "Selesai" ? "Berjalan" : "Selesai";
+
+    daftarProyek[index] = item;
+
+    localStorage.setItem("proyek", JSON.stringify(daftarProyek));
+
+    refreshSemua();
+
+}
+
+function hapusProyek(index) {
+
+    if (confirm("Yakin ingin menghapus proyek ini?")) {
+
+        let daftarProyek = JSON.parse(localStorage.getItem("proyek")) || [];
+
+        daftarProyek.splice(index, 1);
+
+        localStorage.setItem("proyek", JSON.stringify(daftarProyek));
+
+        refreshSemua();
 
     }
 
 }
 
-tampilkanProyek();
-
-function hapusProyek(index) {
-
-    let daftarProyek = JSON.parse(localStorage.getItem("proyek")) || [];
-
-    daftarProyek.splice(index, 1);
-
-    localStorage.setItem("proyek", JSON.stringify(daftarProyek));
-
-    tampilkanProyek();
-
+if (document.getElementById("projectList")) {
+    renderProyekPage();
 }
 
-// ================= DARK MODE (global, checkbox id="darkModeToggle") =================
+// ================= DARK MODE (global) =================
 
 const darkModeToggle = document.getElementById("darkModeToggle");
 
-// Terapkan preferensi dark mode saat halaman dibuka
 if (localStorage.getItem("darkMode") === "on") {
     document.body.classList.add("dark");
 }
@@ -905,17 +983,65 @@ if (darkModeToggle) {
 
 }
 
+// ================= CALENDAR (terhubung ke deadline tugas & proyek) =================
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const calendarEl = document.getElementById("calendar");
 
-    let events = JSON.parse(localStorage.getItem("calendarEvents")) || [];
+    if (!calendarEl) return;
+
+    let catatanManual = JSON.parse(localStorage.getItem("calendarEvents")) || [];
+    const daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
+    const daftarProyek = JSON.parse(localStorage.getItem("proyek")) || [];
+
+    function bangunEvents() {
+
+        let events = [];
+
+        catatanManual.forEach(ev => {
+            events.push({
+                title: ev.title,
+                start: ev.start,
+                color: "#2ecc71",
+                extendedProps: { manual: true }
+            });
+        });
+
+        daftarTugas.forEach(t => {
+            if (t.tanggal) {
+                events.push({
+                    title: `📌 ${t.judul}`,
+                    start: t.tanggal,
+                    color: "#6C63FF",
+                    extendedProps: { manual: false, jenis: "Tugas" }
+                });
+            }
+        });
+
+        daftarProyek.forEach(p => {
+            if (p.deadline) {
+                events.push({
+                    title: `📁 ${p.nama}`,
+                    start: p.deadline,
+                    color: "#f39c12",
+                    extendedProps: { manual: false, jenis: "Proyek" }
+                });
+            }
+        });
+
+        return events;
+
+    }
 
     const calendar = new FullCalendar.Calendar(calendarEl, {
 
-        locale: "id",
         initialView: "dayGridMonth",
+        locale: "id",
+
         height: "auto",
+        contentHeight: "auto",
+        expandRows: true,
 
         headerToolbar: {
             left: "prev,next",
@@ -923,46 +1049,60 @@ document.addEventListener("DOMContentLoaded", function () {
             right: "today"
         },
 
-        events: events,
+        dayHeaderContent: function (arg) {
 
-        dateClick: function(info){
+            const hari = {
+                Sun: "M", Mon: "S", Tue: "S", Wed: "R", Thu: "K", Fri: "J", Sat: "S"
+            };
 
-            const note = prompt("Masukkan catatan");
+            return hari[arg.text] || arg.text;
 
-            if(note){
-
-                const event = {
-                    title: note,
-                    start: info.dateStr
-                };
-
-                events.push(event);
-
-                localStorage.setItem(
-                    "calendarEvents",
-                    JSON.stringify(events)
-                );
-
-                calendar.addEvent(event);
-            }
         },
 
-        eventClick: function(info){
+        events: bangunEvents(),
 
-            if(confirm("Hapus catatan ini?")){
+        dateClick: function (info) {
+
+            let note = prompt("Masukkan catatan / deadline manual untuk tanggal ini");
+
+            if (note) {
+
+                let event = { title: note, start: info.dateStr };
+
+                catatanManual.push(event);
+
+                localStorage.setItem("calendarEvents", JSON.stringify(catatanManual));
+
+                calendar.addEvent({
+                    title: event.title,
+                    start: event.start,
+                    color: "#2ecc71",
+                    extendedProps: { manual: true }
+                });
+
+            }
+
+        },
+
+        eventClick: function (info) {
+
+            if (!info.event.extendedProps.manual) {
+                alert(`${info.event.extendedProps.jenis || "Deadline"} ini otomatis muncul dari halaman ${info.event.extendedProps.jenis === "Proyek" ? "Proyek" : "Tugas"}. Untuk mengubahnya, edit langsung di halaman tersebut.`);
+                return;
+            }
+
+            if (confirm("Hapus catatan ini?")) {
 
                 info.event.remove();
 
-                events = events.filter(e =>
-                    !(e.title === info.event.title &&
-                      e.start === info.event.startStr)
+                catatanManual = catatanManual.filter(e =>
+                    !(e.title === info.event.title && e.start === info.event.startStr)
                 );
 
-                localStorage.setItem(
-                    "calendarEvents",
-                    JSON.stringify(events)
-                );
+                localStorage.setItem("calendarEvents", JSON.stringify(catatanManual));
+
             }
+
         }
 
     });
@@ -970,3 +1110,96 @@ document.addEventListener("DOMContentLoaded", function () {
     calendar.render();
 
 });
+
+// ================= REMINDER & NOTIFIKASI DEADLINE =================
+// Opsional: memakai Notification API browser. Jika tidak didukung / tidak diizinkan,
+// akan gagal secara diam-diam tanpa mengganggu fitur lain.
+
+const OFFSET_REMINDER = {
+    "30menit": 30 * 60 * 1000,
+    "1jam": 1 * 60 * 60 * 1000,
+    "3jam": 3 * 60 * 60 * 1000,
+    "12jam": 12 * 60 * 60 * 1000,
+    "1hari": 24 * 60 * 60 * 1000,
+    "2hari": 48 * 60 * 60 * 1000
+};
+
+function kirimNotifikasi(judul, isi) {
+
+    try {
+
+        if ("Notification" in window && Notification.permission === "granted") {
+            new Notification(judul, { body: isi, icon: "https://cdn-icons-png.flaticon.com/512/906/906334.png" });
+        } else {
+            console.log(`[Reminder] ${judul} - ${isi}`);
+        }
+
+    } catch (err) {
+        console.log("Notifikasi tidak tersedia:", err);
+    }
+
+}
+
+function cekReminderDeadline() {
+
+    try {
+
+        const daftarTugas = JSON.parse(localStorage.getItem("tugas")) || [];
+        const daftarProyek = JSON.parse(localStorage.getItem("proyek")) || [];
+        let sudahDikirim = JSON.parse(localStorage.getItem("reminderTerkirim")) || [];
+
+        const sekarang = new Date();
+
+        function proses(list, ambilJudul, ambilTanggal, ambilStatus, keyPrefix) {
+
+            list.forEach((item, idx) => {
+
+                const tanggal = ambilTanggal(item);
+                const reminder = item.reminder;
+                const status = ambilStatus(item);
+
+                if (!tanggal || !reminder || reminder === "tidak" || reminder === "" || status === "Selesai") return;
+
+                const offset = OFFSET_REMINDER[reminder];
+
+                if (!offset) return;
+
+                // Anggap deadline jatuh tempo di akhir hari (23:59) pada tanggal yang dipilih
+                const batasWaktu = new Date(tanggal + "T23:59:59");
+                const waktuIngatkan = new Date(batasWaktu.getTime() - offset);
+
+                const kunci = `${keyPrefix}-${idx}-${reminder}-${tanggal}`;
+
+                if (sekarang >= waktuIngatkan && sekarang < batasWaktu && !sudahDikirim.includes(kunci)) {
+
+                    kirimNotifikasi(
+                        "⏰ Pengingat Deadline TaskFlow",
+                        `${ambilJudul(item)} akan jatuh tempo pada ${formatTanggal(tanggal)}.`
+                    );
+
+                    sudahDikirim.push(kunci);
+
+                }
+
+            });
+
+        }
+
+        proses(daftarTugas, t => t.judul, t => t.tanggal, t => t.status, "tugas");
+        proses(daftarProyek, p => p.nama, p => p.deadline, p => p.status, "proyek");
+
+        localStorage.setItem("reminderTerkirim", JSON.stringify(sudahDikirim));
+
+    } catch (err) {
+        console.log("Gagal memeriksa reminder:", err);
+    }
+
+}
+
+if ("Notification" in window && Notification.permission === "default") {
+    try { Notification.requestPermission(); } catch (err) {}
+}
+
+// Cek langsung saat halaman dibuka, lalu ulangi tiap menit
+cekReminderDeadline();
+setInterval(cekReminderDeadline, 60 * 1000);

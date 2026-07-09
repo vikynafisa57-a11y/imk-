@@ -275,6 +275,10 @@ button{
     color:#fff;
 }
 
+.task-list{
+    padding-bottom:90px;
+}
+
 .today{
     background:#4CAF50;
 }
@@ -366,6 +370,12 @@ button{
     align-items:center;
     cursor:pointer;
     font-size:18px;
+    text-decoration:none;
+    flex-shrink:0;
+}
+
+.settings-push{
+    margin-left:auto;
 }
 
 /* Search */
@@ -579,7 +589,10 @@ padding-bottom:90px;
 }
 
 .header{
-text-align:center;
+display:flex;
+justify-content:space-between;
+align-items:center;
+text-align:left;
 margin-bottom:20px;
 }
 
@@ -1350,40 +1363,6 @@ color:#e74c3c;
 
 #calendar{
     width:100%;
-    min-height:600px;
-    background:#fff;
-}
-
-.bottom-nav{
-    position:absolute;
-    bottom:0;
-    left:0;
-    width:100%;
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-    background:#fff;
-    border-top:1px solid #ddd;
-    padding:12px 0;
-    border-radius:0 0 25px 25px;
-}
-
-.bottom-nav .nav-item{
-    text-decoration:none;
-    color:#777;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    font-size:12px;
-    gap:5px;
-}
-
-.bottom-nav .nav-item.active{
-    color:#6C63FF;
-}
-
-.bottom-nav i{
-    font-size:18px;
 }
 
 .fc{
@@ -1521,129 +1500,155 @@ color:#e74c3c;
     background:#6C63FF;
     border-radius:20px;
 }
+/* ================= TAMBAHAN: BADGE DEADLINE ================= */
 
-/* ================= RESPONSIVE ================= */
-
-@media screen and (max-width:768px){
-
-    .container,
-    .dashboard,
-    .phone,
-    .task-page,
-    .detail-page,
-    .setting-page{
-        width:95%;
-        max-width:420px;
-        margin:15px auto;
-    }
-
-    nav{
-        width:100%;
-        max-width:420px;
-        left:50%;
-        transform:translateX(-50%);
-    }
-
-    .card-group{
-        gap:8px;
-    }
-
-    .card{
-        padding:12px;
-    }
-
-    .calendar-content{
-        padding:15px;
-    }
-
+.deadline-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    padding:3px 10px;
+    border-radius:20px;
+    font-size:11px;
+    margin-top:4px;
+    background:#F3F4F8;
+    color:#666;
 }
 
-@media screen and (max-width:480px){
-
-    body{
-        padding:10px;
-    }
-
-    .container,
-    .dashboard,
-    .phone,
-    .task-page,
-    .detail-page,
-    .setting-page{
-        width:100%;
-        min-height:100vh;
-        border-radius:15px;
-        padding:18px;
-    }
-
-    .topbar h2,
-    .header h2,
-    .task-header h2,
-    .setting-header h2{
-        font-size:22px;
-    }
-
-    .card-group{
-        display:grid;
-        grid-template-columns:1fr;
-        gap:10px;
-    }
-
-    .kategori{
-        overflow-x:auto;
-        white-space:nowrap;
-    }
-
-    .kategori button{
-        flex-shrink:0;
-    }
-
-    .btn-group{
-        flex-direction:column;
-    }
-
-    .task{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:10px;
-    }
-
-    .aksi-tugas{
-        width:100%;
-        align-items:flex-start;
-    }
-
-    nav{
-        width:100%;
-        max-width:100%;
-        border-radius:0;
-    }
-
+.deadline-badge.telat{
+    background:#FDECEA;
+    color:#E74C3C;
 }
 
-/* ================= RESPONSIVE CARD PROYEK ================= */
+.deadline-badge.hari-ini{
+    background:#E8F8EE;
+    color:#2ecc71;
+}
 
-@media (max-width:768px){
+.deadline-badge.besok{
+    background:#FFF4E5;
+    color:#f39c12;
+}
 
-    .card-group{
-        display:grid;
-        grid-template-columns:repeat(3,1fr);
-        gap:10px;
-    }
+.deadline-badge.nanti{
+    background:#EEECFF;
+    color:#6C63FF;
+}
 
-    .card{
-        min-height:110px;
-        padding:18px 10px;
-        cursor:pointer;
-        transition:.3s;
-    }
+/* ================= TAMBAHAN: TAG KATEGORI / JENIS ================= */
 
-    .card:hover{
-        transform:translateY(-3px);
-    }
+.tag-pill{
+    display:inline-block;
+    padding:3px 10px;
+    border-radius:20px;
+    font-size:11px;
+    background:#EEECFF;
+    color:#6C63FF;
+    margin-bottom:4px;
+}
 
-    .card:active{
-        transform:scale(.97);
-    }
+.tipe-badge{
+    display:inline-block;
+    padding:2px 9px;
+    border-radius:8px;
+    font-size:10px;
+    font-weight:600;
+    margin-right:6px;
+    color:#fff;
+}
 
+.tipe-badge.tugas{
+    background:#6C63FF;
+}
+
+.tipe-badge.proyek{
+    background:#f39c12;
+}
+
+/* ================= TAMBAHAN: ANIMASI CENTANG & SELESAI ================= */
+
+.task{
+    transition:opacity .3s ease, transform .2s ease;
+}
+
+.task.selesai{
+    animation:taskSelesaiPop .35s ease;
+}
+
+@keyframes taskSelesaiPop{
+    0%{ transform:scale(1); }
+    45%{ transform:scale(1.02); }
+    100%{ transform:scale(1); }
+}
+
+.task-info h3,
+.task-info h4{
+    transition:color .3s ease;
+}
+
+.check{
+    transition:background .25s ease, color .25s ease, transform .2s ease;
+}
+
+.check.done{
+    animation:checkPop .3s ease;
+}
+
+@keyframes checkPop{
+    0%{ transform:scale(.7) rotate(-15deg); }
+    60%{ transform:scale(1.25) rotate(5deg); }
+    100%{ transform:scale(1) rotate(0deg); }
+}
+
+.check:active{
+    transform:scale(.9);
+}
+
+/* ================= TAMBAHAN: LIST PROYEK GAYA TUGAS ================= */
+
+.task .progress{
+    margin-top:8px;
+    width:100%;
+}
+
+/* ================= TAMBAHAN: LEGENDA KALENDER ================= */
+
+.calendar-legend{
+    display:flex;
+    justify-content:center;
+    gap:18px;
+    flex-wrap:wrap;
+    padding:0 20px 15px;
+    font-size:12px;
+    color:#666;
+}
+
+.calendar-legend span{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.calendar-legend .dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    display:inline-block;
+}
+
+.dot.tugas{ background:#6C63FF; }
+.dot.proyek{ background:#f39c12; }
+.dot.catatan{ background:#2ecc71; }
+
+body.dark .deadline-badge{
+    background:#3b3b3b;
+    color:#ddd;
+}
+
+body.dark .tag-pill{
+    background:#444;
+    color:#c9c4ff;
+}
+
+body.dark .calendar-legend{
+    color:#ccc;
 }

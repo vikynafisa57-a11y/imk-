@@ -19,6 +19,15 @@
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <h2>Kalender</h2>
+        <a href="setting.html" class="filter settings-push">
+            <i class="fa-solid fa-gear"></i>
+        </a>
+    </div>
+
+    <div class="calendar-legend">
+        <span><i class="dot tugas"></i> Deadline Tugas</span>
+        <span><i class="dot proyek"></i> Deadline Proyek</span>
+        <span><i class="dot catatan"></i> Catatan Manual</span>
     </div>
 
     <div class="calendar-content">
@@ -51,102 +60,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/locales-all.global.min.js"></script>
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    let events = JSON.parse(localStorage.getItem("calendarEvents")) || [];
-
-    const calendar = new FullCalendar.Calendar(document.getElementById("calendar"),{
-
-    initialView:"dayGridMonth",
-    locale:"id",
-
-    height:"auto",
-    contentHeight:"auto",
-    expandRows:true,
-
-    headerToolbar:{
-        left:"prev,next",
-        center:"title",
-        right:"today"
-    },
-
-            dayHeaderContent: function(arg){
-
-                const hari = {
-                    Sun: "M",
-                    Mon: "S",
-                    Tue: "S",
-                    Wed: "R",
-                    Thu: "K",
-                    Fri: "J",
-                    Sat: "S"
-                };
-
-                return hari[arg.text] || arg.text;
-
-            },
-
-            events: events,
-
-            dateClick: function(info){
-
-                let note = prompt("Masukkan catatan");
-
-                if(note){
-
-                    let event = {
-                        title: note,
-                        start: info.dateStr
-                    };
-
-                    events.push(event);
-
-                    localStorage.setItem(
-                        "calendarEvents",
-                        JSON.stringify(events)
-                    );
-
-                    calendar.addEvent(event);
-
-                }
-
-            },
-
-            eventClick: function(info){
-
-                if(confirm("Hapus catatan ini?")){
-
-                    info.event.remove();
-
-                    events = events.filter(e =>
-                        !(e.title === info.event.title &&
-                          e.start === info.event.startStr)
-                    );
-
-                    localStorage.setItem(
-                        "calendarEvents",
-                        JSON.stringify(events)
-                    );
-
-                }
-
-            }
-
-        }
-    );
-
-    calendar.render();
-
-});
-
-</script>
 <script src="script.js"></script>
-
 
 </body>
 </html>

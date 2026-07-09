@@ -18,9 +18,9 @@
 
     <!-- Header -->
     <div class="topbar">
-        <h2>Proyek</h2>
+        <h2>Projek</h2>
 
-        <a href="setting.html">
+        <a href="setting.html" class="filter">
             <i class="fa-solid fa-gear"></i>
         </a>
     </div>
@@ -30,17 +30,17 @@
 
         <div class="card active">
             <h4>Total Proyek</h4>
-            <span>3</span>
+            <span id="totalProyek">0</span>
         </div>
 
         <div class="card">
             <h4>Selesai</h4>
-            <span>1</span>
+            <span id="selesaiProyek">0</span>
         </div>
 
         <div class="card">
             <h4>Berjalan</h4>
-            <span>2</span>
+            <span id="berjalanProyek">0</span>
         </div>
 
     </div>
@@ -52,11 +52,11 @@
     </div>
 
     <!-- Daftar Proyek -->
-    <div id="projectList"></div>
+    <div class="task-list" id="projectList"></div>
 
     <!-- Tombol Tambah -->
 
-        <a href="tambahProyek.html" class="add-btn">
+        <a href="tambahproyek.html" class="add-btn">
             <i class="fa-solid fa-plus"></i>
             Proyek Baru
         </a>
